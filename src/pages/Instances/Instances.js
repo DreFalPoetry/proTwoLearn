@@ -39,9 +39,9 @@ const status = ['关闭', '运行中', '已上线', '异常'];
 
 
 @Form.create()
-@connect(({ rule, loading }) => ({
-  rule,
-  loading: loading.models.rule,
+@connect(({ instances, loading }) => ({
+  instances,
+  loading: loading.models.instances,
 }))
 class TableList extends PureComponent {
   state = {
@@ -50,46 +50,105 @@ class TableList extends PureComponent {
 
   columns = [
     {
-      title: '规则名称',
-      dataIndex: 'name',
+      title: 'Company',
+      dataIndex: 'company',
     },
     {
-      title: '描述',
-      dataIndex: 'desc',
+      title: 'Country',
+      dataIndex: 'country',
     },
     {
-      title: '服务调用次数',
-      dataIndex: 'callNo',
-      render: val => `${val} 万`,
+      title: 'Sub-Domain',
+      dataIndex: 'sub_domain',
     },
     {
-      title: '状态',
+      title: 'Custom Domain',
+      dataIndex: 'custom_domain',
+    },
+    {
+      title: 'Register Email',
+      dataIndex: 'register_email',
+    },
+    {
+      title: 'Register Name',
+      dataIndex: 'register_name',
+    },
+    {
+      title: 'Register Position',
+      dataIndex: 'register_position',
+    },
+    {
+      title: 'Registed At',
+      dataIndex: 'registed_at',
+    },
+    {
+      title: 'Status',
       dataIndex: 'status',
-      render(val) {
-        return <Badge status={statusMap[val]} text={status[val]} />;
-      },
     },
     {
-      title: '上次调度时间',
-      dataIndex: 'updatedAt',
-      render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+      title: 'Clicks',
+      dataIndex: 'clicks',
     },
     {
-      title: '操作',
-      render: (text, record) => (
-        <Fragment>
-          <a onClick={() => this.handleUpdateModalVisible(true, record)}>配置</a>
-          <Divider type="vertical" />
-          <a href="">订阅警报</a>
-        </Fragment>
-      ),
+      title: 'Conversions',
+      dataIndex: 'conversions',
+    },
+    {
+      title: 'Spend',
+      dataIndex: 'spend',
+    },
+    {
+      title: 'Earnings',
+      dataIndex: 'earnings',
+    },
+    {
+      title: 'Profit',
+      dataIndex: 'profit',
+    },
+    {
+      title: 'ROI,%',
+      dataIndex: 'roi',
+    },
+    {
+      title: 'Action',
+      dataIndex: '',
+      render:(text,record) => {
+        const setMenu = (
+          <Menu>
+            <Menu.Item key="1">
+              Approve
+            </Menu.Item>
+            <Menu.Item key="2">
+              Reject
+            </Menu.Item>
+            <Menu.Item key="3">
+              Stop
+            </Menu.Item>
+            <Menu.Item key="4">
+              Start
+            </Menu.Item>
+            <Menu.Item key="5">
+              Terminate
+            </Menu.Item>
+          </Menu>
+        );
+        return (
+          <div className={styles.tableActsWrapper}>
+            <a>Edit</a>
+            <Divider type="vertical" />
+            <Dropdown overlay={setMenu}>
+              <a>Set <Icon type="down" /></a>
+            </Dropdown>
+          </div>
+        )
+      }
     },
   ];
 
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/fetch',
+      type: 'instances/fetch',
     });
   }
 
@@ -114,7 +173,7 @@ class TableList extends PureComponent {
     }
 
     dispatch({
-      type: 'rule/fetch',
+      type: 'instances/fetch',
       payload: params,
     });
   };
@@ -126,7 +185,7 @@ class TableList extends PureComponent {
       formValues: {},
     });
     dispatch({
-      type: 'rule/fetch',
+      type: 'instances/fetch',
       payload: {},
     });
   };
@@ -149,7 +208,7 @@ class TableList extends PureComponent {
       });
 
       dispatch({
-        type: 'rule/fetch',
+        type: 'instances/fetch',
         payload: values,
       });
     });
@@ -164,7 +223,7 @@ class TableList extends PureComponent {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="规则名称">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('name')(<Input placeholder="请输入" autoComplete="off" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -223,17 +282,36 @@ class TableList extends PureComponent {
   }
 
   render() {
-    const { data } = this.props;
+    const { instances:{dataList}, loading } = this.props;
     return (
       <PageHeaderWrapper>
         <Card bordered={false}>
           <div>
             <div className={styles.searchFormWrapper}>{this.renderSearchForm()}</div>
+            <div className={styles.operateWrapper}>
+              <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+                <Col md={8} sm={24}>
+                  <Button icon="plus">Start Instance</Button>
+                </Col>
+                <Col md={16} sm={24}>
+                  <div className={styles.rightOptWrapper}>
+                    <label>Statistics By Recently：</label>
+                    <Select defaultValue="1" allowClear style={{ width: 230 }}>
+                      <Option value="1">Today</Option>
+                      <Option value="2">Last 2 Days</Option>
+                      <Option value="3">Last 7 Days</Option>
+                    </Select>
+                  </div>
+                </Col>
+              </Row>
+            </div>
             <div className={styles.commonTableWrapper}>
               <Table
                 bordered
                 size='small'
-                dataSource={data}
+                rowKey='uniqueKey'
+                loading={loading}
+                dataSource={dataList}
                 columns={this.columns}
                 pagination={{
                   showSizeChanger:true,
@@ -242,11 +320,6 @@ class TableList extends PureComponent {
                 }}
               />
             </div>
-            {/* <Table
-              data={data}
-              columns={this.columns}
-              onChange={this.handleTableChange}
-            /> */}
           </div>
         </Card>
       </PageHeaderWrapper>

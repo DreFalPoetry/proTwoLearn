@@ -1,7 +1,7 @@
 export default {
   'menu.home': 'Início',
   'menu.instances':'Instances',
-  'menu.instances.instances':'Instances',
+  'menu.instances.instances':'Manage Instances',
   'menu.dashboard': 'Dashboard',
   'menu.dashboard.analysis': 'Análise',
   'menu.dashboard.monitor': 'Monitor',

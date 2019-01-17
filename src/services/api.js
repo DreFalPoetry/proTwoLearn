@@ -124,3 +124,9 @@ export async function queryNotices(params = {}) {
 export async function getFakeCaptcha(mobile) {
   return request(`/api/captcha?mobile=${mobile}`);
 }
+
+
+//add New api
+export async function queryInstances(params) {
+  return request(`/api/instances?${stringify(params)}`);
+}
