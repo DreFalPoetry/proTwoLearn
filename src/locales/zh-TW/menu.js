@@ -1,5 +1,7 @@
 export default {
   'menu.home': '首頁',
+  'menu.instances':'Instances',
+  'menu.instances.instances':'Instances',
   'menu.dashboard': 'Dashboard',
   'menu.dashboard.analysis': '分析頁',
   'menu.dashboard.monitor': '監控頁',
