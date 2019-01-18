@@ -2,6 +2,8 @@ export default {
   'menu.home': 'Home',
   'menu.instances':'Instances',
   'menu.instances.instances':'Manage Instances',
+  'menu.instances.startInstance':'Start Instances',
+  'menu.instances.editInstance':'Edit Instances',
   'menu.dashboard': 'Dashboard',
   'menu.dashboard.analysis': 'Analysis',
   'menu.dashboard.monitor': 'Monitor',

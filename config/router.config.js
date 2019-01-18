@@ -28,7 +28,19 @@ export default [
             path:'/instances/manageInstances',
             name:'instances',
             component:'./Instances/Instances'
-          }
+          },
+          {
+            path: '/instances/startInstance',
+            name: 'startInstance',
+            hideInMenu: true,
+            component: './Instances/NewInstances',
+          },
+          {
+            path: '/instances/editInstance',
+            name: 'editInstance',
+            hideInMenu: true,
+            component: './Instances/NewInstances',
+          },
         ]
       },
       {

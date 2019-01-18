@@ -1,6 +1,7 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
+import router from 'umi/router';
 import {
   Table,
   Row,
@@ -134,7 +135,7 @@ class TableList extends PureComponent {
         );
         return (
           <div className={styles.tableActsWrapper}>
-            <a>Edit</a>
+            <a onClick={this.editRowInfo.bind(this,record)}>Edit</a>
             <Divider type="vertical" />
             <Dropdown overlay={setMenu}>
               <a>Set <Icon type="down" /></a>
@@ -281,6 +282,19 @@ class TableList extends PureComponent {
     );
   }
 
+  newInstance = () =>{
+    router.push({
+      pathname: '/instances/startInstance',
+    });
+  }
+
+  editRowInfo = (record) => {
+    this.props.history.push({
+      pathname:'/instances/editInstance',
+      query:{info:record},
+    })
+  }
+
   render() {
     const { instances:{dataList}, loading } = this.props;
     return (
@@ -291,7 +305,7 @@ class TableList extends PureComponent {
             <div className={styles.operateWrapper}>
               <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
                 <Col md={8} sm={24}>
-                  <Button icon="plus">Start Instance</Button>
+                  <Button icon="plus" onClick={this.newInstance}>Start Instance</Button>
                 </Col>
                 <Col md={16} sm={24}>
                   <div className={styles.rightOptWrapper}>
