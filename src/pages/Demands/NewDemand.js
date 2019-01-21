@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component ,Fragment } from 'react';
 import { connect } from 'dva';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import {
@@ -19,7 +19,7 @@ import {
 } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from '../../css/common.less';
-// import TableForm from './TableForm';
+import TableForm from './TableForm';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -86,7 +86,7 @@ class SuppliesForm extends Component {
     });
   };
 
-  turnBackToInstances = () => {
+  turnBackToDemands = () => {
     this.props.history.push('/demands/manageDemands');
   }
 
@@ -129,6 +129,39 @@ class SuppliesForm extends Component {
         <Card bordered={false}>
           <Form onSubmit={this.handleSubmit} style={{ marginTop: 8 }}>
             <Row><Col xs={24} sm={7}><h2 className={styles.infoFormStepHeader}>Basic Info</h2></Col></Row>
+            <FormItem {...formItemLayout} label="Demand Type">
+              {getFieldDecorator('demand_type', {
+                rules: [
+                  {
+                    required: true,
+                    message: 'Please Input',
+                  },
+                ],
+                initialValue:formInfo.demand_type
+              })(
+                <Radio.Group  buttonStyle="solid">
+                  <Radio.Button value="a">Client</Radio.Button>
+                  <Radio.Button value="b">Partner</Radio.Button>
+                </Radio.Group>
+              )}
+            </FormItem>
+            <FormItem {...formItemLayout} label="Client Type">
+              {getFieldDecorator('client_type', {
+                rules: [
+                  {
+                    required: true,
+                    message: 'Please Input',
+                  },
+                ],
+                initialValue:formInfo.client_type
+              })(
+                <Radio.Group  buttonStyle="solid">
+                  <Radio.Button value="a">Direct</Radio.Button>
+                  <Radio.Button value="b">Agency</Radio.Button>
+                  <Radio.Button value="c">Affiliate Network</Radio.Button>
+                </Radio.Group>
+              )}
+            </FormItem>
             <FormItem {...formItemLayout} label="Name">
               {getFieldDecorator('name', {
                 rules: [
@@ -164,13 +197,6 @@ class SuppliesForm extends Component {
                 initialValue:formInfo.country
               })(
                 <Input />
-                // <RangePicker
-                //   style={{ width: '100%' }}
-                //   placeholder={[
-                //     formatMessage({ id: 'form.date.placeholder.start' }),
-                //     formatMessage({ id: 'form.date.placeholder.end' }),
-                //   ]}
-                // />
               )}
             </FormItem>
             <FormItem {...formItemLayout} label="State">
@@ -214,100 +240,6 @@ class SuppliesForm extends Component {
             </FormItem>
             <Divider />
             <Row><Col xs={24} sm={7}><h2 className={styles.infoFormStepHeader}>Advenced Settings</h2></Col></Row>
-            <FormItem {...formItemLayout} label="Tracking Template">
-              {getFieldDecorator('tracking_template', {
-                initialValue:formInfo.tracking_template
-              })(<Input />)}
-            </FormItem>
-            <FormItem {...formItemLayout} label="Postback Method">
-              {getFieldDecorator('postback_method', {
-                initialValue:formInfo.postback_method,
-                rules: [
-                  {
-                    required: true,
-                    message: 'Please Select',
-                  },
-                ],
-              })(
-                <Select allowClear>
-                  <Option value="get">GET</Option>
-                  <Option value="post">POST</Option>
-                </Select>
-              )}
-            </FormItem>
-            <FormItem {...formItemLayout} label="Postback URL">
-              {getFieldDecorator('postback_url', {
-                rules: [
-                  {
-                    required: true,
-                    message: 'Please Input',
-                  },
-                ],
-                initialValue:formInfo.postback_url
-              })(
-                <Input />
-              )}
-            </FormItem>
-            <FormItem {...formItemLayout} label="Open Market through S2s API">
-              {getFieldDecorator('open_market', {
-                initialValue:formInfo.open_market,
-                rules: [
-                  {
-                    required: true,
-                    message: 'Please Select',
-                  },
-                ],
-              })(
-                <Select allowClear>
-                  <Option value="1">Limited</Option>
-                  <Option value="2">Less than 2 redirections</Option>
-                  <Option value="3">Less than 3 redirections</Option>
-                  <Option value="4">Less than 4 redirections</Option>
-                  <Option value="5">All avaliable offers</Option>
-                </Select>
-              )}
-            </FormItem>
-            <FormItem {...formItemLayout} label="Demand Blacklists">
-              {getFieldDecorator('demand_blacklists', {
-                rules: [
-                  {
-                    required: true,
-                    message: 'Please Input',
-                  },
-                ],
-                initialValue:formInfo.demand_blacklists
-              })(
-                <Input />
-              )}
-            </FormItem>
-            <div className={styles.infoFormCheckBoxWrapper}>
-              <Row>
-                <Col xs = { 24 } sm = {7}></Col>
-                <Col xs = { 24 } sm ={12} md = {10}>
-                  <Checkbox>Is Incentive Traffic?</Checkbox>
-                </Col>
-              </Row>
-              <Row>
-                <Col xs = { 24 } sm = {7}></Col>
-                <Col xs = { 24 } sm ={12} md = {10}>
-                  <Checkbox>Support API</Checkbox>
-                </Col>
-              </Row>
-              <Row>
-                <Col xs = { 24 } sm = {7}></Col>
-                <Col xs = { 24 } sm ={12} md = {10}>
-                  <Checkbox>Allow Optimization</Checkbox>
-                </Col>
-              </Row>
-              <Row>
-                <Col xs = { 24 } sm = {7}></Col>
-                <Col xs = { 24 } sm ={12} md = {10}>
-                  <Checkbox>Send Recommend Emails</Checkbox>
-                </Col>
-              </Row>
-            </div>
-            <Divider />
-            <Row><Col xs={24} sm={7}><h2 className={styles.infoFormStepHeader}>Payment</h2></Col></Row>
             <FormItem {...formItemLayout} label="Currency">
               {getFieldDecorator('currency', {
                 initialValue:formInfo.currency,
@@ -340,40 +272,76 @@ class SuppliesForm extends Component {
                 </Select>
               )}
             </FormItem>
-            <Divider />
-            <Row><Col xs={24} sm={7}><h2 className={styles.infoFormStepHeader}>Relationship</h2></Col></Row>
-            <FormItem {...formItemLayout} label="BD">
-              {getFieldDecorator('bd', {
-                initialValue:formInfo.bd
+            <FormItem {...formItemLayout} label="Commission">
+              {getFieldDecorator('commission', {
+                initialValue:formInfo.commission
               })(
-                <Select allowClear>
-                  <Option value="1">Tom</Option>
-                  <Option value="2">Jeny</Option>
-                </Select>
+                <Input />
               )}
             </FormItem>
-            <FormItem {...formItemLayout} label="AM">
-              {getFieldDecorator('am', {
-                initialValue:formInfo.am
+            <FormItem {...formItemLayout} label="Invoice Less Commission">
+              {getFieldDecorator('invoice_less_commission', {
+                initialValue:formInfo.invoice_less_commission
               })(
-                <Select allowClear>
-                  <Option value="1">Tom</Option>
-                  <Option value="2">Jeny</Option>
-                </Select>
+                <Checkbox>Invoice LC</Checkbox>
               )}
             </FormItem>
+            <FormItem {...formItemLayout} label="Kickback">
+              {getFieldDecorator('kickback', {
+                initialValue:formInfo.kickback
+              })(
+                <Input />
+              )}
+            </FormItem>
+            {formInfo.demand_type !== 1 ? (
+                <Fragment>
+                  <Divider />
+                  <Row><Col xs={24} sm={7}><h2 className={styles.infoFormStepHeader}>Relationship</h2></Col></Row>
+                  <FormItem {...formItemLayout} label="Partner">
+                    {getFieldDecorator('partner', {
+                      initialValue:formInfo.partner
+                    })(
+                      <Select allowClear>
+                        <Option value="1">Tom</Option>
+                        <Option value="2">Jeny</Option>
+                      </Select>
+                    )}
+                  </FormItem>
+                  <FormItem {...formItemLayout} label="Sales">
+                    {getFieldDecorator('sales', {
+                      initialValue:formInfo.sales
+                    })(
+                      <Select allowClear>
+                        <Option value="1">Tom</Option>
+                        <Option value="2">Jeny</Option>
+                      </Select>
+                    )}
+                  </FormItem>
+                  <FormItem {...formItemLayout} label="PM">
+                    {getFieldDecorator('pm', {
+                      initialValue:formInfo.pm
+                    })(
+                      <Select allowClear>
+                        <Option value="1">Tom</Option>
+                        <Option value="2">Jeny</Option>
+                      </Select>
+                    )}
+                  </FormItem>
+                </Fragment>
+              ):null
+            }
             <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
               <Button type="primary" htmlType="submit" loading={submitting}>
                 <FormattedMessage id={isEdit?"infoForm.update":"infoForm.create"}/>
               </Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.turnBackToInstances}>
+              <Button style={{ marginLeft: 8 }} onClick={this.turnBackToDemands}>
                 <FormattedMessage id="infoForm.cancel"/>
               </Button>
             </FormItem>
           </Form>
         </Card>
         <Card title="Manage Members" bordered={false}>
-          {/* <TableForm /> */}
+          <TableForm />
         </Card>
       </PageHeaderWrapper>
     );
