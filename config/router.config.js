@@ -18,7 +18,7 @@ export default [
     authority: ['admin', 'user'],
     routes: [
       // dashboard
-      { path: '/', redirect: '/dashboard/analysis' },
+      { path: '/', redirect: '/instances/manageInstances' },
       {
         path:'/instances',
         name:'instances',
@@ -33,13 +33,37 @@ export default [
             path: '/instances/startInstance',
             name: 'startInstance',
             hideInMenu: true,
-            component: './Instances/NewInstances',
+            component: './Instances/NewInstance',
           },
           {
             path: '/instances/editInstance',
             name: 'editInstance',
             hideInMenu: true,
-            component: './Instances/NewInstances',
+            component: './Instances/NewInstance',
+          },
+        ]
+      },
+      {
+        path:'/supplies',
+        name:'supplies',
+        icon:'dashboard',
+        routes:[
+          {
+            path:'/supplies/manageSupplies',
+            name:'supplies',
+            component:'./Supplies/Supplies'
+          },
+          {
+            path: '/supplies/newSupply',
+            name: 'newSupply',
+            hideInMenu: true,
+            component: './Supplies/NewSupplie',
+          },
+          {
+            path: '/supplies/editSupply',
+            name: 'editSupply',
+            hideInMenu: true,
+            component: './Supplies/NewSupplie',
           },
         ]
       },

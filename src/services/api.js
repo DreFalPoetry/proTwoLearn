@@ -130,3 +130,7 @@ export async function getFakeCaptcha(mobile) {
 export async function queryInstances(params) {
   return request(`/api/instances?${stringify(params)}`);
 }
+
+export async function querySupplies(params) {
+  return request(`/api/supplies?${stringify(params)}`);
+}
