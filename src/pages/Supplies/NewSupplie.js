@@ -19,6 +19,7 @@ import {
 } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from '../../css/common.less';
+import TableForm from './TableForm';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -370,6 +371,9 @@ class SuppliesForm extends Component {
               </Button>
             </FormItem>
           </Form>
+        </Card>
+        <Card title="Manage Members" bordered={false}>
+          <TableForm />
         </Card>
       </PageHeaderWrapper>
     );

@@ -113,19 +113,10 @@ class TableList extends PureComponent {
         const setMenu = (
           <Menu>
             <Menu.Item key="1">
-              Approve
+              Ban
             </Menu.Item>
             <Menu.Item key="2">
-              Reject
-            </Menu.Item>
-            <Menu.Item key="3">
-              Stop
-            </Menu.Item>
-            <Menu.Item key="4">
-              Start
-            </Menu.Item>
-            <Menu.Item key="5">
-              Terminate
+              reOpen
             </Menu.Item>
           </Menu>
         );
