@@ -68,6 +68,30 @@ export default [
         ]
       },
       {
+        path:'/demands',
+        name:'demands',
+        icon:'dashboard',
+        routes:[
+          {
+            path:'/demands/manageDemands',
+            name:'demands',
+            component:'./Demands/Demands'
+          },
+          {
+            path: '/demands/newDemand',
+            name: 'newDemand',
+            hideInMenu: true,
+            component: './Demands/NewDemand',
+          },
+          {
+            path: '/demands/editDemand',
+            name: 'editDemand',
+            hideInMenu: true,
+            component: './Demands/NewDemand',
+          },
+        ]
+      },
+      {
         path: '/dashboard',
         name: 'dashboard',
         icon: 'dashboard',

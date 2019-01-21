@@ -134,3 +134,7 @@ export async function queryInstances(params) {
 export async function querySupplies(params) {
   return request(`/api/supplies?${stringify(params)}`);
 }
+
+export async function queryDemands(params) {
+  return request(`/api/demands?${stringify(params)}`);
+}
