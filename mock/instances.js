@@ -102,4 +102,7 @@ export default {
   'PUT /api/instances/1001': (req, res) => {
     res.send({ code: 0 });
   },
+  'POST /api/instances/changeStatus':(req, res) => {
+    res.send({ code: 0 });
+  },
 };

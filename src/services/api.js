@@ -145,6 +145,13 @@ export async function editInstance(id,params) {
   });
 }
 
+export async function changeInstanceStatus(params) {
+  return request('/api/instances/changeStatus',{
+    method: 'POST',
+    body: params,
+  });
+}
+
 
 export async function querySupplies(params) {
   return request(`/api/supplies?${stringify(params)}`);

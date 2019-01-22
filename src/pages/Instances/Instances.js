@@ -27,6 +27,7 @@ import {
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from '../../css/common.less';
 import { getInstanceStatusLabel,transFigureToPercent } from '../../utils/commonFunc';
+import { changeInstanceStatus } from '../../services/api';
 
 const FormItem = Form.Item;
 const { Step } = Steps;
@@ -126,7 +127,7 @@ class TableList extends PureComponent {
       dataIndex: '',
       render:(text,record) => {
         const setMenu = (
-          <Menu>
+          <Menu onClick={this.changeRowStatus.bind(this,record)}>
             <Menu.Item key="1">
               Approve
             </Menu.Item>
@@ -159,6 +160,28 @@ class TableList extends PureComponent {
 
   componentDidMount() {
     this.fetchDataList()
+  }
+
+  changeRowStatus = (record,{key}) => {
+    const { instances:{ dataList },dispatch } = this.props;
+    console.log(key);
+    let params = {id:record.id,status:Number(key)};
+    const response = changeInstanceStatus(params)
+    response.then(json => {
+      if(json.code === 0){
+        message.success('Success');
+        let tempDataList = dataList.map((item)=>{
+          if(item.id == record.id){
+            item.status = Number(key) 
+          }
+          return item
+        })
+        dispatch({
+          type:'instances/asyncDataList',
+          payload:tempDataList
+        })
+      }
+    })
   }
 
   newInstance = () =>{
