@@ -19,7 +19,7 @@ export function getCallBackListData(res) {
   return [];
 }
 
-export function getStatusLabel(status){
+export function getInstanceStatusLabel(status){
   switch (status) {
     case 1:
       return  <Tag color="#ff9900">Pending-Audit</Tag>;
@@ -34,7 +34,18 @@ export function getStatusLabel(status){
     case 6:
       return  <Tag color="#666666">Terminated</Tag>
     default:
-      break;
+      return '';
+  }
+}
+
+export function getSupplyStatusLabel(status){
+  switch (status) {
+    case 1:
+      return  <Tag color="#009900">Normal</Tag>;
+    case 2:
+      return  <Tag color="#cc0000">Banned</Tag>
+    default:
+      return '';
   }
 }
 

@@ -6,8 +6,11 @@ export default {
 
   state: {
     dataList:[],
-    pagination:{},
-    searchVals:{},
+    pageSettings:{
+      page:1,
+      page_size:20,
+    },
+    formValues:{},
   },
 
   effects: {
@@ -52,5 +55,17 @@ export default {
         dataList: action.payload,
       };
     },
+    asyncFormValues(state,{payload}) {
+      return {
+        ...state,
+        formValues:payload
+      }
+    },
+    asyncPageSettings(state,{payload}) {
+      return {
+        ...state,
+        pageSettings:payload
+      }
+    }
   },
 };

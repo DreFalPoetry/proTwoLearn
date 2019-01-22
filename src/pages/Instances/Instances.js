@@ -26,7 +26,7 @@ import {
 } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from '../../css/common.less';
-import { getStatusLabel,transFigureToPercent } from '../../utils/commonFunc';
+import { getInstanceStatusLabel,transFigureToPercent } from '../../utils/commonFunc';
 
 const FormItem = Form.Item;
 const { Step } = Steps;
@@ -88,7 +88,7 @@ class TableList extends PureComponent {
       title: 'Status',
       dataIndex: 'status',
       render:(text)=>{
-        return getStatusLabel(text);
+        return getInstanceStatusLabel(text);
       }
     },
     {
@@ -301,7 +301,7 @@ class TableList extends PureComponent {
                 <Col md={16} sm={24}>
                   <div className={styles.rightOptWrapper}>
                     <label>Statistics By Recently：</label>
-                    <Select defaultValue="1" allowClear style={{ width: 230 }} onChange={this.changeStatistics}>
+                    <Select placeholder="Select" allowClear style={{ width: 230 }} onChange={this.changeStatistics}>
                       <Option value="1">Today</Option>
                       <Option value="2">Last 2 Days</Option>
                       <Option value="3">Last 7 Days</Option>
