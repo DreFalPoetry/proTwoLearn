@@ -115,5 +115,11 @@ export default {
   'POST /api/instances/changeStatus':(req, res) => {
     res.send({ code: 0 });
   },
+  'PUT /supply/1001': (req, res) => {
+    res.send({ code: 0 });
+  },
+  'POST /supply':(req, res) => {
+    res.send({ code: 0 });
+  },
   'GET /api/search':companyList
 };

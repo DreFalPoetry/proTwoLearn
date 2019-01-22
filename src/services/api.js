@@ -158,8 +158,18 @@ export async function querySupplies(params) {
   return request(`/api/supplies?${stringify(params)}`);
 }
 
-export async function queryCampany(params) {
-	return debounceRequest(`/api/search?${stringify(params)}`);
+export async function newSupply(params) {
+  return request('/supply',{
+    method: 'POST',
+    body: params,
+  });
+}
+
+export async function editSupply(id,params) {
+  return request('/supply/' + id,{
+    method: 'PUT',
+    body: params,
+  });
 }
 
 export async function queryDemands(params) {
@@ -168,4 +178,9 @@ export async function queryDemands(params) {
 
 export async function queryCountryList() {
   return request(`/api/countryList`);
+}
+
+
+export async function queryCampany(params) {
+	return debounceRequest(`/api/search?${stringify(params)}`);
 }

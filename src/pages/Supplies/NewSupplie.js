@@ -16,11 +16,13 @@ import {
   Col,
   Divider,
   Checkbox,
-  AutoComplete
+  AutoComplete,
+  message
 } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from '../../css/common.less';
 import TableForm from './TableForm';
+import {newSupply,editSupply} from '../../services/api';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -76,14 +78,28 @@ class SuppliesForm extends Component {
 
   handleSubmit = e => {
     const { dispatch, form } = this.props;
+    const {isEdit,formInfo} = this.state;
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         console.log(values);
-        dispatch({
-          type: 'form/submitRegularForm',
-          payload: values,
-        });
+        if(isEdit){
+          const response = editSupply(formInfo.id,values)
+          response.then(json => {
+            if(json.code === 0){
+              message.success('Success');
+              this.props.history.push('/supplies/manageSupplies');
+            }
+          })
+        }else{
+          const response = newSupply(values)
+          response.then(json => {
+            if(json.code === 0){
+              message.success('Success');
+              this.props.history.push('/supplies/manageSupplies');
+            }
+          })
+        }
       }
     });
   };
@@ -183,6 +199,7 @@ class SuppliesForm extends Component {
                   optionFilterProp="children"
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
+                  <Option value="get">GET</Option>
                   {/* {countryList.map((item,index)=> <Option key={index} value={item.value}>{item.label}</Option> )} */}
                 </Select>
               )}
@@ -203,6 +220,7 @@ class SuppliesForm extends Component {
                   optionFilterProp="children"
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
+                  <Option value="get">GET</Option>
                   {/* {countryList.map((item,index)=> <Option key={index} value={item.value}>{item.label}</Option> )} */}
                 </Select>
               )}
@@ -223,6 +241,7 @@ class SuppliesForm extends Component {
                   optionFilterProp="children"
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
+                  <Option value="get">GET</Option>
                   {/* {countryList.map((item,index)=> <Option key={index} value={item.value}>{item.label}</Option> )} */}
                 </Select>
               )}
