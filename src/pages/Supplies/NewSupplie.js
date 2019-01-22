@@ -15,7 +15,8 @@ import {
   Row, 
   Col,
   Divider,
-  Checkbox
+  Checkbox,
+  AutoComplete
 } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from '../../css/common.less';
@@ -26,7 +27,8 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 
-@connect(({ loading }) => ({
+@connect(({ loading,supplies}) => ({
+  supplies,
   submitting: loading.effects['instances/submitInstancesForm'],
 }))
 @Form.create()
@@ -86,15 +88,23 @@ class SuppliesForm extends Component {
     });
   };
 
-  turnBackToInstances = () => {
-    this.props.history.push('/instances/manageInstances');
+  turnBackToSupplies = () => {
+    this.props.history.push('/supplies/manageSupplies');
+  }
+
+  searchCompany = (value) => {
+    if (value && value.length > 2) {
+      this.props.dispatch({
+        type: 'supplies/fetchCompany',
+        payload: {keyword:value},
+      });
+    }
   }
 
   render() {
     const {
-      form: { getFieldDecorator, getFieldValue },submitting
+      form: { getFieldDecorator, getFieldValue },submitting,supplies:{companyDataList}
     } = this.props;
-
     const {isEdit,formInfo,breadcrumbList} = this.state;
 
     const formItemLayout = {
@@ -138,7 +148,7 @@ class SuppliesForm extends Component {
                   },
                 ],
                 initialValue:formInfo.name
-              })(<Input />)}
+              })(<Input autoComplete="off"/>)}
             </FormItem>
             <FormItem {...formItemLayout} label="Company">
               {getFieldDecorator('company', {
@@ -150,7 +160,11 @@ class SuppliesForm extends Component {
                 ],
                 initialValue:formInfo.company
               })(
-                <Input />
+                <AutoComplete
+                  dataSource={companyDataList}
+                  onSearch={this.searchCompany}
+                  placeholder="Search"
+                />
               )}
             </FormItem>
             <FormItem {...formItemLayout} label="Country">
@@ -163,14 +177,14 @@ class SuppliesForm extends Component {
                 ],
                 initialValue:formInfo.country
               })(
-                <Input />
-                // <RangePicker
-                //   style={{ width: '100%' }}
-                //   placeholder={[
-                //     formatMessage({ id: 'form.date.placeholder.start' }),
-                //     formatMessage({ id: 'form.date.placeholder.end' }),
-                //   ]}
-                // />
+                <Select
+                  showSearch
+                  placeholder="Select a person"
+                  optionFilterProp="children"
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >
+                  {/* {countryList.map((item,index)=> <Option key={index} value={item.value}>{item.label}</Option> )} */}
+                </Select>
               )}
             </FormItem>
             <FormItem {...formItemLayout} label="State">
@@ -183,7 +197,14 @@ class SuppliesForm extends Component {
                 ],
                 initialValue:formInfo.state
               })(
-                <Input />
+                <Select
+                  showSearch
+                  placeholder="Select a person"
+                  optionFilterProp="children"
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >
+                  {/* {countryList.map((item,index)=> <Option key={index} value={item.value}>{item.label}</Option> )} */}
+                </Select>
               )}
             </FormItem>
             <FormItem {...formItemLayout} label="City">
@@ -195,7 +216,16 @@ class SuppliesForm extends Component {
                   },
                 ],
                 initialValue:formInfo.city
-              })(<Input />)}
+              })(
+                <Select
+                  showSearch
+                  placeholder="Select a person"
+                  optionFilterProp="children"
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >
+                  {/* {countryList.map((item,index)=> <Option key={index} value={item.value}>{item.label}</Option> )} */}
+                </Select>
+              )}
             </FormItem>
             <FormItem {...formItemLayout} label="Address">
               {getFieldDecorator('address',{
@@ -366,7 +396,7 @@ class SuppliesForm extends Component {
               <Button type="primary" htmlType="submit" loading={submitting}>
                 <FormattedMessage id={isEdit?"infoForm.update":"infoForm.create"}/>
               </Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.turnBackToInstances}>
+              <Button style={{ marginLeft: 8 }} onClick={this.turnBackToSupplies}>
                 <FormattedMessage id="infoForm.cancel"/>
               </Button>
             </FormItem>

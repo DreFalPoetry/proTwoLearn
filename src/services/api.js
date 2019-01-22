@@ -1,5 +1,6 @@
 import { stringify } from 'qs';
 import request from '@/utils/request';
+import debounceRequest from '@/utils/debounceRequest';
 
 export async function queryProjectNotice() {
   return request('/api/project/notice');
@@ -155,6 +156,10 @@ export async function changeInstanceStatus(params) {
 
 export async function querySupplies(params) {
   return request(`/api/supplies?${stringify(params)}`);
+}
+
+export async function queryCampany(params) {
+	return debounceRequest(`/api/search?${stringify(params)}`);
 }
 
 export async function queryDemands(params) {

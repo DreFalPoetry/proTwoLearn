@@ -91,6 +91,16 @@ const countryList = mockjs.mock({
   ],
 })
 
+const companyList = mockjs.mock({
+  code:0,
+  'info|30':[
+    {
+      'value|+1':1001,
+      "label":'@word(8, 12)', 
+    }
+  ]
+})
+
 export default {
   'GET /api/instances': instancesList,
   'GET /api/supplies': suppliesList,
@@ -105,4 +115,5 @@ export default {
   'POST /api/instances/changeStatus':(req, res) => {
     res.send({ code: 0 });
   },
+  'GET /api/search':companyList
 };
