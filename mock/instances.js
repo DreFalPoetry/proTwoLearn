@@ -59,13 +59,13 @@ const demandsList = mockjs.mock({
   'info|100': [
     { 
       'code|+1':1001,
-      "demand_type|1-6":1, 
+      "demand_type|1-2":1, 
       name:'@name',
       company: '@word(8, 12)', 
       partner: '@name', 
       sales: '@name', 
       pm: '@name', 
-      "status|1-6":1, 
+      "status|1-2":1, 
       "clicks|200-10000":3221, 
       "conversions|100-8000":3012, 
       cr:'@float(0, 0, 2, 2)', 

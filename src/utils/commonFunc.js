@@ -49,6 +49,29 @@ export function getSupplyStatusLabel(status){
   }
 }
 
+
+export function getDemandTypeLabel(status){
+  switch (status) {
+    case 1:
+      return 'Client';
+    case 2:
+      return 'Partner';
+    default:
+      return '';
+  }
+}
+
+export function getDemandStatusLabel(status){
+  switch (status) {
+    case 1:
+      return  <Tag color="#009900">Normal</Tag>;
+    case 2:
+      return  <Tag color="#cc0000">Banned</Tag>
+    default:
+      return '';
+  }
+}
+
 export function transFigureToPercent(figure){
   return (figure*100).toFixed(2) + '%';
 }

@@ -199,7 +199,7 @@ class TableList extends PureComponent {
           <Col md={8} sm={24}>
             <FormItem label="Status">
               {getFieldDecorator('status')(
-                <Select placeholder="Select" style={{ width: '100%' }}>
+                <Select placeholder="Select" allowClear style={{ width: '100%' }}>
                   <Option value="0">All</Option>
                   <Option value="1">Normal</Option>
                   <Option value="2">Banned</Option>
