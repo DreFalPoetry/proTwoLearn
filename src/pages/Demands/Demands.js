@@ -283,7 +283,7 @@ class TableList extends PureComponent {
       <PageHeaderWrapper>
         <Card bordered={false}>
           <div>
-            <div className={styles.searchFormWrapper}>{this.renderSearchForm()}</div>
+            <div className={`${styles.searchFormWrapper} ${styles.searchDemands}` }>{this.renderSearchForm()}</div>
             <div className={styles.operateWrapper}>
               <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
                 <Col md={8} sm={24}>
