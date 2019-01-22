@@ -81,8 +81,25 @@ const demandsList = mockjs.mock({
   page_size:20
 });
 
+const countryList = mockjs.mock({
+  code:0,
+  'info|50':[
+    { 
+      'value|+1':1001,
+      "label":'@county', 
+    }
+  ],
+})
+
 export default {
   'GET /api/instances': instancesList,
   'GET /api/supplies': suppliesList,
   'GET /api/demands': demandsList,
+  'GET /api/countryList':countryList,
+  'POST /api/instances': (req, res) => {
+    res.send({ code: 0 });
+  },
+  'PUT /api/instances/1001': (req, res) => {
+    res.send({ code: 0 });
+  },
 };

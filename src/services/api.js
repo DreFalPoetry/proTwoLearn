@@ -131,10 +131,29 @@ export async function queryInstances(params) {
   return request(`/api/instances?${stringify(params)}`);
 }
 
+export async function newInstance(params) {
+  return request('/api/instances',{
+    method: 'POST',
+    body: params,
+  });
+}
+
+export async function editInstance(id,params) {
+  return request('/api/instances/'+ id,{
+    method: 'PUT',
+    body: params,
+  });
+}
+
+
 export async function querySupplies(params) {
   return request(`/api/supplies?${stringify(params)}`);
 }
 
 export async function queryDemands(params) {
   return request(`/api/demands?${stringify(params)}`);
+}
+
+export async function queryCountryList() {
+  return request(`/api/countryList`);
 }

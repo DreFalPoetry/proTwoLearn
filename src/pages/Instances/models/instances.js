@@ -1,4 +1,4 @@
-import { queryRule, removeRule, addRule, updateRule,queryInstances } from '@/services/api';
+import { queryRule, removeRule, addRule, updateRule,queryInstances, queryCountryList } from '@/services/api';
 import {getCallBackListData} from '../../../utils/commonFunc';
 
 export default {
@@ -11,6 +11,7 @@ export default {
       page_size:20,
     },
     formValues:{},
+    countryList:[]
   },
 
   effects: {
@@ -21,6 +22,15 @@ export default {
         type: 'asyncDataList',
         payload: tempDataList,
       });
+    },
+    *fetchCountryList(_, { call, put }) {
+      const response = yield call(queryCountryList);
+      if(response && response.code == 0){
+        yield put({
+          type: 'asyncCountryList',
+          payload: response.info,
+        });
+      }
     },
     *add({ payload, callback }, { call, put }) {
       const response = yield call(addRule, payload);
@@ -65,6 +75,12 @@ export default {
       return {
         ...state,
         pageSettings:payload
+      }
+    },
+    asyncCountryList(state,{payload}) {
+      return {
+        ...state,
+        countryList:payload
       }
     }
   },
