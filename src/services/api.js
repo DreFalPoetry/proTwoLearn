@@ -172,8 +172,22 @@ export async function editSupply(id,params) {
   });
 }
 
+export async function changeSupplyStatus(params) {
+  return request('/api/supply/changeStatus',{
+    method: 'POST',
+    body: params,
+  });
+}
+
 export async function queryDemands(params) {
   return request(`/api/demands?${stringify(params)}`);
+}
+
+export async function changeDemandStatus(params) {
+  return request('/api/demand/changeStatus',{
+    method: 'POST',
+    body: params,
+  });
 }
 
 export async function queryCountryList() {

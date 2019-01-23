@@ -27,6 +27,7 @@ import {
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from '../../css/common.less';
 import { getDemandTypeLabel, getDemandStatusLabel,transFigureToPercent} from '../../utils/commonFunc';
+import { changeDemandStatus } from '../../services/api';
 
 const FormItem = Form.Item;
 const { Step } = Steps;
@@ -131,7 +132,7 @@ class TableList extends PureComponent {
       dataIndex: '',
       render:(text,record) => {
         const setMenu = (
-          <Menu>
+          <Menu onClick={this.changeRowStatus.bind(this,record)}>
             <Menu.Item key="1">
               Ban
             </Menu.Item>
@@ -155,6 +156,27 @@ class TableList extends PureComponent {
 
   componentDidMount() {
     this.fetchDataList()
+  }
+
+  changeRowStatus = (record,{key}) => {
+    const { demands:{ dataList },dispatch } = this.props;
+    let params = {code:record.code,status:Number(key)};
+    const response = changeDemandStatus(params)
+    response.then(json => {
+      if(json.code === 0){
+        message.success('Success');
+        let tempDataList = dataList.map((item)=>{
+          if(item.code == record.code){
+            item.status = Number(key) 
+          }
+          return item
+        })
+        dispatch({
+          type:'demands/asyncDataList',
+          payload:tempDataList
+        })
+      }
+    })
   }
 
   searchFormReset = () => {

@@ -121,5 +121,11 @@ export default {
   'POST /supply':(req, res) => {
     res.send({ code: 0 });
   },
+  'POST /api/supply/changeStatus':(req, res) => {
+    res.send({ code: 0 });
+  },
+  'POST /api/demand/changeStatus':(req, res) => {
+    res.send({ code: 0 });
+  },
   'GET /api/search':companyList
 };
