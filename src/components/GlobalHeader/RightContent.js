@@ -89,6 +89,7 @@ export default class GlobalHeaderRight extends PureComponent {
       skeletonCount,
       theme,
     } = this.props;
+    const userinfo = JSON.parse(localStorage.getItem('newUserinfo'));
     const menu = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
         <Menu.Item key="userCenter">
@@ -99,10 +100,10 @@ export default class GlobalHeaderRight extends PureComponent {
           <Icon type="setting" />
           <FormattedMessage id="menu.account.settings" defaultMessage="account settings" />
         </Menu.Item>
-        <Menu.Item key="triggerError">
+        {/* <Menu.Item key="triggerError">
           <Icon type="close-circle" />
           <FormattedMessage id="menu.account.trigger" defaultMessage="Trigger Error" />
-        </Menu.Item>
+        </Menu.Item> */}
         <Menu.Divider />
         <Menu.Item key="logout">
           <Icon type="logout" />
@@ -195,7 +196,7 @@ export default class GlobalHeaderRight extends PureComponent {
             {...loadMoreProps}
           />
         </NoticeIcon>
-        {currentUser.name ? (
+        {userinfo &&  userinfo.name ? (
           <HeaderDropdown overlay={menu}>
             <span className={`${styles.action} ${styles.account}`}>
               <Avatar
@@ -204,7 +205,7 @@ export default class GlobalHeaderRight extends PureComponent {
                 src={currentUser.avatar}
                 alt="avatar"
               />
-              <span className={styles.name}>{currentUser.name}</span>
+              <span className={styles.name}>{userinfo.name}</span>
             </span>
           </HeaderDropdown>
         ) : (

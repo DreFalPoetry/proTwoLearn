@@ -128,6 +128,18 @@ export async function getFakeCaptcha(mobile) {
 
 
 //add New api
+export async function userLogin(params) {
+  return request('http://192.168.31.15:8081' + '/user/login', {
+    method: 'POST',
+    body: params,
+  });
+}
+
+export async function userLogout() {
+  return request('http://192.168.31.15:8081' + '/user/logout');
+}
+
+
 export async function queryInstances(params) {
   return request(`/api/instances?${stringify(params)}`);
 }
