@@ -21,7 +21,6 @@ export default {
     fetchCompany: [
 			function*({ payload }, { call, put }) {
         const response = yield call(queryCampany, payload);
-        console.log(response);
         if(response && response.code === 0 ){
           const companyTempList = response.info || [];
 					let companyList = companyTempList.map((item, index) => {

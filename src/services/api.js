@@ -190,6 +190,20 @@ export async function changeDemandStatus(params) {
   });
 }
 
+export async function newDemand(params) {
+  return request('/demand',{
+    method: 'POST',
+    body: params,
+  });
+}
+
+export async function editDemand(id,params) {
+  return request('/demand/' + id,{
+    method: 'PUT',
+    body: params,
+  });
+}
+
 export async function queryCountryList() {
   return request(`/api/countryList`);
 }

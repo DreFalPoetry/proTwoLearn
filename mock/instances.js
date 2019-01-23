@@ -124,6 +124,12 @@ export default {
   'POST /api/supply/changeStatus':(req, res) => {
     res.send({ code: 0 });
   },
+  'POST /demand':(req, res) => {
+    res.send({ code: 0 });
+  },
+  'PUT /demand/1001': (req, res) => {
+    res.send({ code: 0 });
+  },
   'POST /api/demand/changeStatus':(req, res) => {
     res.send({ code: 0 });
   },
