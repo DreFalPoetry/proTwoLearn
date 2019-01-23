@@ -3,7 +3,7 @@ import mockjs from 'mockjs';
 
 const instancesList = mockjs.mock({
   code:0,
-  'info|100': [
+  'entries|100': [
     { 
       'id|+1':1001,
       company: '@word(8, 12)', 
@@ -31,7 +31,7 @@ const instancesList = mockjs.mock({
 
 const suppliesList = mockjs.mock({
   code:0,
-  'info|100': [
+  'entries|100': [
     { 
       'aff_id|+1':1001,
       name:'@name',
@@ -56,7 +56,7 @@ const suppliesList = mockjs.mock({
 
 const demandsList = mockjs.mock({
   code:0,
-  'info|100': [
+  'entries|100': [
     { 
       'code|+1':1001,
       "demand_type|1-2":1, 
@@ -83,7 +83,7 @@ const demandsList = mockjs.mock({
 
 const countryList = mockjs.mock({
   code:0,
-  'info|50':[
+  'entries|50':[
     { 
       'value|+1':1001,
       "label":'@county', 
@@ -93,7 +93,7 @@ const countryList = mockjs.mock({
 
 const companyList = mockjs.mock({
   code:0,
-  'info|30':[
+  'entries|30':[
     {
       'value|+1':1001,
       "label":'@word(8, 12)', 

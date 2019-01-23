@@ -167,7 +167,7 @@ export async function changeInstanceStatus(params) {
 
 
 export async function querySupplies(params) {
-  return request(`/api/supplies?${stringify(params)}`);
+  return request('http://192.168.31.15:8081'+ `/supply?${stringify(params)}`);
 }
 
 export async function newSupply(params) {

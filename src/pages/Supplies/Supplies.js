@@ -63,15 +63,15 @@ class TableList extends PureComponent {
     },
     {
       title: 'Company',
-      dataIndex: 'company',
+      dataIndex: 'company_name',
     },
     {
       title: 'BD',
-      dataIndex: 'bd',
+      dataIndex: 'bd_name',
     },
     {
       title: 'AM',
-      dataIndex: 'am',
+      dataIndex: 'am_name',
     },
     {
       title: 'Status',

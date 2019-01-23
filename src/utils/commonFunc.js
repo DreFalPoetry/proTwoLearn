@@ -2,7 +2,7 @@ import {Message,Tag} from 'antd';
 export function getCallBackListData(res) {
   if(res){
     if(res.code === 0){
-      let tempDataList = res.info || [];
+      let tempDataList = res.entries || [];
       tempDataList.map((item,index)=>{
         item.uniqueKey = index
       })
