@@ -29,8 +29,9 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 
-@connect(({ loading,supplies}) => ({
+@connect(({ loading,supplies,common}) => ({
   supplies,
+  common,
   submitting: loading.effects['instances/submitInstancesForm'],
 }))
 @Form.create()
@@ -111,7 +112,7 @@ class SuppliesForm extends Component {
   searchCompany = (value) => {
     if (value && value.length > 2) {
       this.props.dispatch({
-        type: 'supplies/fetchCompany',
+        type: 'common/fetchCompany',
         payload: {keyword:value},
       });
     }
@@ -119,7 +120,7 @@ class SuppliesForm extends Component {
 
   render() {
     const {
-      form: { getFieldDecorator, getFieldValue },submitting,supplies:{companyDataList}
+      form: { getFieldDecorator, getFieldValue },submitting,common:{companyDataList}
     } = this.props;
     const {isEdit,formInfo,breadcrumbList} = this.state;
 

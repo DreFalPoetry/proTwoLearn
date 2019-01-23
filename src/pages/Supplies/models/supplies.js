@@ -1,4 +1,4 @@
-import { queryRule, removeRule, addRule, updateRule,querySupplies,queryCampany } from '@/services/api';
+import { queryRule, removeRule, addRule, updateRule,querySupplies } from '@/services/api';
 import {getCallBackListData} from '../../../utils/commonFunc';
 
 export default {
@@ -11,7 +11,6 @@ export default {
       page_size:20,
     },
     formValues:{},
-    companyDataList:[],
   },
 
   effects: {
@@ -47,27 +46,6 @@ export default {
       });
       if (callback) callback();
     },
-    fetchCompany: [
-			function*({ payload }, { call, put }) {
-        const response = yield call(queryCampany, payload);
-        console.log(response);
-        if(response && response.code === 0 ){
-          const companyTempList = response.info || [];
-					let companyList = companyTempList.map((item, index) => {
-						let listItem = {};
-						listItem.text = `${item.label}`;
-						listItem.value = item.value;
-						listItem.key = index + 1;
-						return listItem;
-					});
-					yield put({
-						type: 'asyncCompanyDataList',
-						payload: companyList,
-					});
-        }
-			},
-			{ type: 'takeLatest' },
-		],
   },
 
   reducers: {
@@ -89,11 +67,5 @@ export default {
         pageSettings:payload
       }
     },
-    asyncCompanyDataList(state,{payload}) {
-      return {
-        ...state,
-        companyDataList:payload
-      }
-    }
   },
 };

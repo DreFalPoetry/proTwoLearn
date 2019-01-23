@@ -22,8 +22,9 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 
-@connect(({ loading,instances }) => ({
+@connect(({ loading,instances,common }) => ({
   instances,
+  common,
   submitting: loading.effects['instances/submitInstancesForm'],
 }))
 @Form.create()
@@ -56,7 +57,7 @@ class InstancesForm extends Component {
   
   componentDidMount(){
     this.props.dispatch({
-      type:'instances/fetchCountryList'
+      type:'common/fetchCountryList'
     })
     if(this.props.location.query.info){
       this.setState({
@@ -110,7 +111,7 @@ class InstancesForm extends Component {
   render() {
     const {
       form: { getFieldDecorator, getFieldValue },submitting,
-      instances:{countryList}
+      common:{countryList}
     } = this.props;
     const {isEdit,formInfo,breadcrumbList,pageHeaderTitle,pageHeaderContent} = this.state;
     const formItemLayout = {
