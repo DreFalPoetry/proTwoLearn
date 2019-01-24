@@ -127,7 +127,6 @@ class SuppliesForm extends Component {
     const {
       form: { getFieldDecorator, getFieldValue },submitting,common:{companyDataList,countryList}
     } = this.props;
-
     const {isEdit,formInfo,breadcrumbList,demand_type} = this.state;
     const formItemLayout = {
       labelCol: {

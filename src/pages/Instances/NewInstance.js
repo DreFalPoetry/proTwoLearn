@@ -111,7 +111,7 @@ class InstancesForm extends Component {
   render() {
     const {
       form: { getFieldDecorator, getFieldValue },submitting,
-      common:{countryList}
+      // common:{countryList}
     } = this.props;
     const {isEdit,formInfo,breadcrumbList,pageHeaderTitle,pageHeaderContent} = this.state;
     const formItemLayout = {
@@ -168,7 +168,7 @@ class InstancesForm extends Component {
                   optionFilterProp="children"
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
-                  {countryList.map((item,index)=> <Option key={index} value={item.value}>{item.label}</Option> )}
+                  {/* {countryList.map((item,index)=> <Option key={index} value={item.value}>{item.label}</Option> )} */}
                 </Select>
               )}
             </FormItem>

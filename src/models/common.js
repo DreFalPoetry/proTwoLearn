@@ -14,7 +14,7 @@ export default {
       if(response && response.code == 0){
         yield put({
           type: 'asyncCountryList',
-          payload: response.info,
+          payload: response.entries,
         });
       }
     },
@@ -22,7 +22,7 @@ export default {
 			function*({ payload }, { call, put }) {
         const response = yield call(queryCampany, payload);
         if(response && response.code === 0 ){
-          const companyTempList = response.info || [];
+          const companyTempList = response.entries || [];
 					let companyList = companyTempList.map((item, index) => {
 						let listItem = {};
 						listItem.text = `${item.label}`;
