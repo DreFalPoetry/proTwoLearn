@@ -217,10 +217,18 @@ export async function editDemand(id,params) {
 }
 
 export async function queryCountryList() {
-  return request(`/api/countryList`);
+  return request('http://192.168.31.15:8081' + `/common/regions`);
+}
+
+export async function queryRelationship(params) {
+  return request('http://192.168.31.15:8081' + `/common/relationship?${stringify(params)}`);
+}
+
+export async function queryCurrency() {
+  return request('http://192.168.31.15:8081' + `/common/currency`);
 }
 
 
 export async function queryCampany(params) {
-	return debounceRequest(`/api/search?${stringify(params)}`);
+	return debounceRequest('http://192.168.31.15:8081' + `/common/company?${stringify(params)}`);
 }

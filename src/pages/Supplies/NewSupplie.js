@@ -61,7 +61,17 @@ class SuppliesForm extends Component {
   }
   
   componentDidMount(){
+    this.props.dispatch({
+      type:'common/fetchCountryList'
+    })
+    this.props.dispatch({
+      type:'common/fetchCurrencyList'
+    })
     if(this.props.location.query.info){
+      this.props.dispatch({
+        type:'common/fetchRelationshipList',
+        payload:{page_type:'supply',company_id:this.props.location.query.info.company_id}
+      })
       this.setState({
         isEdit:true,
         formInfo:this.props.location.query.info,
@@ -113,17 +123,35 @@ class SuppliesForm extends Component {
     if (value && value.length > 2) {
       this.props.dispatch({
         type: 'common/fetchCompany',
-        payload: {keyword:value},
+        payload: {name:value},
       });
     }
   }
 
+  selectCampany = (value,option) => {
+    const { companyDataList } = this.props.common;
+    companyDataList.map((item)=>{
+      if(item.value === value){
+        if(item.id){
+          this.props.dispatch({
+            type:'common/fetchRelationshipList',
+            payload:{page_type:'supply',company_id:item.id}
+          })
+        }
+      }
+    })
+  }
+
+  changeRegion = (value,option) => {
+    console.log(option);
+  }
+
   render() {
     const {
-      form: { getFieldDecorator, getFieldValue },submitting,common:{companyDataList}
+      form: { getFieldDecorator, getFieldValue },submitting,
+      common:{companyDataList,countryList,stateList,cityList,currencyList,amsList,bdsList}
     } = this.props;
     const {isEdit,formInfo,breadcrumbList} = this.state;
-
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -135,7 +163,6 @@ class SuppliesForm extends Component {
         md: { span: 10 },
       },
     };
-
     const submitFormLayout = {
       wrapperCol: {
         xs: { span: 24, offset: 0 },
@@ -180,40 +207,41 @@ class SuppliesForm extends Component {
                 <AutoComplete
                   dataSource={companyDataList}
                   onSearch={this.searchCompany}
+                  onSelect={this.selectCampany}
                   placeholder="Search"
                 />
               )}
             </FormItem>
             <FormItem {...formItemLayout} label="Country">
-              {getFieldDecorator('country', {
+              {getFieldDecorator('country_code', {
                 rules: [
                   {
                     required: true,
                     message: 'Please Input',
                   },
                 ],
-                initialValue:formInfo.country
+                initialValue:formInfo.country_code
               })(
                 <Select
                   showSearch
                   placeholder="Select a person"
                   optionFilterProp="children"
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  onChange={this.changeRegion}
                 >
-                  <Option value="get">GET</Option>
-                  {/* {countryList.map((item,index)=> <Option key={index} value={item.value}>{item.label}</Option> )} */}
+                  {countryList.map((item,index)=> <Option childdata={"sdsd"} key={index} value={item.value}>{item.label}</Option> )}
                 </Select>
               )}
             </FormItem>
             <FormItem {...formItemLayout} label="State">
-              {getFieldDecorator('state', {
+              {getFieldDecorator('province_geoname_id', {
                 rules: [
                   {
                     required: true,
                     message: 'Please Input',
                   },
                 ],
-                initialValue:formInfo.state
+                initialValue:formInfo.province_geoname_id
               })(
                 <Select
                   showSearch
@@ -227,14 +255,14 @@ class SuppliesForm extends Component {
               )}
             </FormItem>
             <FormItem {...formItemLayout} label="City">
-              {getFieldDecorator('city', {
+              {getFieldDecorator('city_geoname_id', {
                 rules: [
                   {
                     required: true,
                     message: 'Please Input',
                   },
                 ],
-                initialValue:formInfo.city
+                initialValue:formInfo.city_geoname_id
               })(
                 <Select
                   showSearch
@@ -267,7 +295,7 @@ class SuppliesForm extends Component {
             <FormItem {...formItemLayout} label="Tracking Template">
               {getFieldDecorator('tracking_template', {
                 initialValue:formInfo.tracking_template
-              })(<Input />)}
+              })(<Input autoComplete="off" />)}
             </FormItem>
             <FormItem {...formItemLayout} label="Postback Method">
               {getFieldDecorator('postback_method', {
@@ -280,8 +308,8 @@ class SuppliesForm extends Component {
                 ],
               })(
                 <Select allowClear>
-                  <Option value="get">GET</Option>
-                  <Option value="post">POST</Option>
+                  <Option value="GET">GET</Option>
+                  <Option value="POST">POST</Option>
                 </Select>
               )}
             </FormItem>
@@ -295,7 +323,7 @@ class SuppliesForm extends Component {
                 ],
                 initialValue:formInfo.postback_url
               })(
-                <Input />
+                <Input autoComplete="off"/>
               )}
             </FormItem>
             <FormItem {...formItemLayout} label="Open Market through S2s API">
@@ -308,12 +336,12 @@ class SuppliesForm extends Component {
                   },
                 ],
               })(
-                <Select allowClear>
+                <Select allowClear placeholder="Select">
                   <Option value="1">Limited</Option>
                   <Option value="2">Less than 2 redirections</Option>
                   <Option value="3">Less than 3 redirections</Option>
                   <Option value="4">Less than 4 redirections</Option>
-                  <Option value="5">All avaliable offers</Option>
+                  <Option value="0">All avaliable offers</Option>
                 </Select>
               )}
             </FormItem>
@@ -327,32 +355,48 @@ class SuppliesForm extends Component {
                 ],
                 initialValue:formInfo.demand_blacklists
               })(
-                <Input />
+                <Input autoComplete="off"/>
               )}
             </FormItem>
             <div className={styles.infoFormCheckBoxWrapper}>
               <Row>
                 <Col xs = { 24 } sm = {7}></Col>
                 <Col xs = { 24 } sm ={12} md = {10}>
-                  <Checkbox>Is Incentive Traffic?</Checkbox>
+                  <FormItem>
+                    {getFieldDecorator('is_incentive')(
+                      <Checkbox>Is Incentive Traffic?</Checkbox>
+                    )}
+                  </FormItem>
                 </Col>
               </Row>
               <Row>
                 <Col xs = { 24 } sm = {7}></Col>
                 <Col xs = { 24 } sm ={12} md = {10}>
-                  <Checkbox>Support API</Checkbox>
+                  <FormItem>
+                    {getFieldDecorator('support_api')(
+                      <Checkbox>Support API</Checkbox>
+                    )}
+                  </FormItem>
                 </Col>
               </Row>
               <Row>
                 <Col xs = { 24 } sm = {7}></Col>
                 <Col xs = { 24 } sm ={12} md = {10}>
-                  <Checkbox>Allow Optimization</Checkbox>
+                  <FormItem>
+                    {getFieldDecorator('allow_optimization')(
+                      <Checkbox>Allow Optimization</Checkbox>
+                    )}
+                  </FormItem>
                 </Col>
               </Row>
               <Row>
                 <Col xs = { 24 } sm = {7}></Col>
                 <Col xs = { 24 } sm ={12} md = {10}>
-                  <Checkbox>Send Recommend Emails</Checkbox>
+                  <FormItem>
+                  {getFieldDecorator('accept_recommendation')(
+                    <Checkbox>Send Recommend Emails</Checkbox>
+                  )}
+                  </FormItem>
                 </Col>
               </Row>
             </div>
@@ -368,9 +412,10 @@ class SuppliesForm extends Component {
                   },
                 ],
               })(
-                <Select allowClear>
-                  <Option value="USD">$</Option>
-                  <Option value="ruby">ruby</Option>
+                <Select placeholder="Select" allowClear>
+                {
+                  currencyList.map((item,index)=><Option key={index} value={item}>{item}</Option>)
+                }
                 </Select>
               )}
             </FormItem>
@@ -384,9 +429,10 @@ class SuppliesForm extends Component {
                   },
                 ],
               })(
-                <Select allowClear>
-                  <Option value="30">30 Days</Option>
-                  <Option value="40">40 Days</Option>
+                <Select allowClear placeholder="Select">
+                  <Option value={30}>30 Days</Option>
+                  <Option value={60}>60 Days</Option>
+                  <Option value={90}>90 Days</Option>
                 </Select>
               )}
             </FormItem>
@@ -397,8 +443,9 @@ class SuppliesForm extends Component {
                 initialValue:formInfo.bd
               })(
                 <Select allowClear>
-                  <Option value="1">Tom</Option>
-                  <Option value="2">Jeny</Option>
+                 {bdsList.map((item,index)=>(
+                  <Option value={item.id} key={index}>{item.name}</Option>
+                ))}
                 </Select>
               )}
             </FormItem>
@@ -407,8 +454,9 @@ class SuppliesForm extends Component {
                 initialValue:formInfo.am
               })(
                 <Select allowClear>
-                  <Option value="1">Tom</Option>
-                  <Option value="2">Jeny</Option>
+                {amsList.map((item,index)=>(
+                  <Option value={item.id} key={index}>{item.name}</Option>
+                ))}
                 </Select>
               )}
             </FormItem>
