@@ -171,7 +171,7 @@ export async function querySupplies(params) {
 }
 
 export async function newSupply(params) {
-  return request('/supply',{
+  return request('http://192.168.31.15:8081' + '/supply',{
     method: 'POST',
     body: params,
   });

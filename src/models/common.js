@@ -79,6 +79,18 @@ export default {
         countryList:payload
       }
     },
+    asyncStateList(state,{payload}) {
+      return {
+        ...state,
+        stateList:payload
+      }
+    },
+    asyncCityList(state,{payload}) {
+      return {
+        ...state,
+        cityList:payload
+      }
+    },
     asyncCurrencyList(state,{payload}) {
       return {
         ...state,

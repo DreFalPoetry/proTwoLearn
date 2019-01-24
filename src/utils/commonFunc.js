@@ -19,6 +19,19 @@ export function getCallBackListData(res) {
   return [];
 }
 
+export function submitCallback(res){
+  if(res){
+    if(res.code === 0){
+      return true;
+    }else{
+      if(res.code === 1){
+        Message.error(res.info)
+      }
+    }
+  }
+  return null;
+}
+
 export function getInstanceStatusLabel(status){
   switch (status) {
     case 1:
