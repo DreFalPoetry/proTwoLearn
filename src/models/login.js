@@ -64,6 +64,7 @@ export default {
             currentAuthority: 'guest',
           },
         });
+        localStorage.removeItem('newUserinfo');
         reloadAuthorized();
         yield put(
           routerRedux.push({
@@ -75,6 +76,25 @@ export default {
         );
       }
     },
+    *clearUserInfo(_, { put }) {
+      yield put({
+        type: 'changeLoginStatus',
+        payload: {
+          status: false,
+          currentAuthority: 'guest',
+        },
+      });
+      localStorage.removeItem('newUserinfo');
+      reloadAuthorized();
+      yield put(
+        routerRedux.push({
+          pathname: '/user/login',
+          search: stringify({
+            redirect: window.location.href,
+          }),
+        })
+      ) 
+    }
   },
 
   reducers: {
@@ -83,7 +103,6 @@ export default {
       return {
         ...state,
         status:payload.status,
-        userinfo: payload.userinfo,
       };
     },
   },

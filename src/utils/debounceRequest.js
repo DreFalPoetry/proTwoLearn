@@ -107,7 +107,7 @@ export default function debounceRequest(url, options) {
 			const status = e.name;
 			if (status === 401) {
 				window.g_app._store.dispatch({
-					type: 'login/logout',
+					type: 'login/clearUserInfo',
 				});
 				return;
 			}
