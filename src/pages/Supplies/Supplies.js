@@ -215,16 +215,16 @@ class TableList extends PureComponent {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="Search">
-              {getFieldDecorator('keyword')(<Input placeholder="ID, Name, Company" autoComplete="off" />)}
+              {getFieldDecorator('keywords')(<Input placeholder="ID, Name, Company" autoComplete="off" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="Status">
               {getFieldDecorator('status')(
                 <Select placeholder="Select" allowClear style={{ width: '100%' }}>
-                  <Option value="0">All</Option>
-                  <Option value="1">Normal</Option>
-                  <Option value="2">Banned</Option>
+                  <Option value={-1}>All</Option>
+                  <Option value={0}>Normal</Option>
+                  <Option value={1}>Banned</Option>
                 </Select>
               )}
             </FormItem>
