@@ -59,6 +59,9 @@ class SuppliesForm extends Component {
     this.props.dispatch({
       type:'common/fetchCurrencyList'
     })
+    this.props.dispatch({
+      type:'common/fetchDemandList'
+    })
     this.props.dispatch({//请求sales pm列表
       type:'common/fetchRelationshipList',
       payload:{page_type:'supply'}
@@ -96,6 +99,7 @@ class SuppliesForm extends Component {
         values.allow_optimization = Number(values.allow_optimization);
         values.is_incentive = Number(values.is_incentive);
         values.support_api = Number(values.support_api);
+        values.demand_blacklists = values.demand_blacklists? values.demand_blacklists.join(','):undefined;
         if(isEdit){
           const response = editSupply(formInfo.id,values)
           response.then(json => {
@@ -154,7 +158,7 @@ class SuppliesForm extends Component {
   render() {
     const {
       form: { getFieldDecorator, getFieldValue },submitting,
-      common:{companyDataList,countryList,stateList,cityList,currencyList,amsList,bdsList}
+      common:{companyDataList,countryList,stateList,cityList,currencyList,amsList,bdsList,demandList}
     } = this.props;
     const {isEdit,formInfo,breadcrumbList} = this.state;
     const company = this.state.formInfo.company || {};
@@ -359,9 +363,15 @@ class SuppliesForm extends Component {
                     message: 'Please Input',
                   },
                 ],
-                initialValue:formInfo.demand_blacklists
+                initialValue:formInfo.demand_blacklists?formInfo.demand_blacklists.split(','):[]
               })(
-                <Input autoComplete="off"/>
+                <Select
+                  mode="multiple"                
+                  placeholder="Select"
+                >
+                  {demandList.map((item,index)=><Option value={item} key={index}>{item}</Option>)}
+                </Select>
+                // <Input autoComplete="off"/>
               )}
             </FormItem>
             <div className={styles.infoFormCheckBoxWrapper}>

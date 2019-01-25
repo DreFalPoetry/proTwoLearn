@@ -1,4 +1,5 @@
-import { queryCountryList ,queryCampany,queryCurrency,queryRelationship} from '@/services/api';
+import { queryCountryList ,queryCampany,queryCurrency,queryRelationship,queryDemands} from '@/services/api';
+import {getCallBackListData} from '@/utils/commonFunc';
 
 export default {
   namespace: 'common',
@@ -14,6 +15,7 @@ export default {
     salesList:[],
     pmsList:[],
     partnersList:[],
+    demandList:[]
   },
 
   effects: {
@@ -75,6 +77,17 @@ export default {
         }
       }
     },
+    *fetchDemandList(_, { call, put }) {
+      const response = yield call(queryDemands);
+      let tempDataList = getCallBackListData(response);
+      let demandList = tempDataList.map((item)=>{
+        return item.code
+      })
+      yield put({
+        type: 'asyncDemandList',
+        payload: demandList,
+      });
+    },
     fetchCompany: [
 			function*({ payload }, { call, put }) {
         const response = yield call(queryCampany, payload);
@@ -120,6 +133,12 @@ export default {
       return {
         ...state,
         currencyList:payload
+      }
+    },
+    asyncDemandList(state,{payload}) {
+      return {
+        ...state,
+        demandList:payload
       }
     },
     asyncAMBDList(state,{payload}) {
