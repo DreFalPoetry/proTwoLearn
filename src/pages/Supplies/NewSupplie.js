@@ -60,14 +60,15 @@ class SuppliesForm extends Component {
     this.props.dispatch({
       type:'common/fetchCurrencyList'
     })
-    if(this.props.location.query.info){
+    if(this.props.location.state){
+      const editInfo = this.props.location.state.info;
       this.props.dispatch({
         type:'common/fetchRelationshipList',
-        payload:{page_type:'supply',company_id:this.props.location.query.info.company_id}
+        payload:{page_type:'supply',company_id:editInfo.company_id}
       })
       this.setState({
         isEdit:true,
-        formInfo:this.props.location.query.info,
+        formInfo:editInfo,
         breadcrumbList:[{
           title: formatMessage({ id: 'menu.supplies' })
         },{
@@ -216,7 +217,7 @@ class SuppliesForm extends Component {
                     message: 'Please Input',
                   },
                 ],
-                initialValue:formInfo.company
+                initialValue:formInfo.company_name
               })(
                 <AutoComplete
                   dataSource={companyDataList}
@@ -380,6 +381,7 @@ class SuppliesForm extends Component {
                 <Col xs = { 24 } sm ={12} md = {10}>
                   <FormItem>
                     {getFieldDecorator('is_incentive',{
+                      valuePropName:'checked',
                       initialValue:formInfo.is_incentive?true:false
                     })(
                       <Checkbox>Is Incentive Traffic?</Checkbox>
@@ -392,6 +394,7 @@ class SuppliesForm extends Component {
                 <Col xs = { 24 } sm ={12} md = {10}>
                   <FormItem>
                     {getFieldDecorator('support_api',{
+                      valuePropName:'checked',
                       initialValue:formInfo.support_api?true:false
                     })(
                       <Checkbox>Support API</Checkbox>
@@ -404,6 +407,7 @@ class SuppliesForm extends Component {
                 <Col xs = { 24 } sm ={12} md = {10}>
                   <FormItem>
                     {getFieldDecorator('allow_optimization',{
+                      valuePropName:'checked',
                       initialValue:formInfo.allow_optimization?true:false
                     })(
                       <Checkbox>Allow Optimization</Checkbox>
@@ -416,6 +420,7 @@ class SuppliesForm extends Component {
                 <Col xs = { 24 } sm ={12} md = {10}>
                   <FormItem>
                   {getFieldDecorator('accept_recommendation',{
+                    valuePropName:'checked',
                     initialValue:formInfo.accept_recommendation?true:false
                   })(
                     <Checkbox>Send Recommend Emails</Checkbox>
@@ -494,9 +499,13 @@ class SuppliesForm extends Component {
             </FormItem>
           </Form>
         </Card>
-        <Card title="Manage Members" bordered={false}>
-          <TableForm />
-        </Card>
+        {
+          isEdit?(
+            <Card title="Manage Members" bordered={false} style={{marginTop:24}} >
+              <TableForm company_id={formInfo.company_id}/>
+            </Card>
+          ):null
+        }
       </PageHeaderWrapper>
     );
   }

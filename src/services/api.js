@@ -228,7 +228,19 @@ export async function queryCurrency() {
   return request('http://192.168.31.15:8081' + `/common/currency`);
 }
 
+export async function queryCampanyNumbers(params) {
+	return request('http://192.168.31.15:8081' + `/member?${stringify(params)}`);
+}
+
+export async function addCampanyNumbers(params) {
+	return request('http://192.168.31.15:8081' + `/member`,{
+    method: 'POST',
+    body: params,
+  });
+}
+
 
 export async function queryCampany(params) {
 	return debounceRequest('http://192.168.31.15:8081' + `/common/company?${stringify(params)}`);
 }
+

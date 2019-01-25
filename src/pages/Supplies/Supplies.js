@@ -55,7 +55,7 @@ class TableList extends PureComponent {
   columns = [
     {
       title: 'ID {aff_id}',
-      dataIndex: 'aff_id',
+      dataIndex: 'id',
     },
     {
       title: 'Name',
@@ -251,7 +251,7 @@ class TableList extends PureComponent {
   editRowInfo = (record) => {
     this.props.history.push({
       pathname:'/supplies/editSupply',
-      query:{info:record},
+      state:{info:record},
     })
   }
 
