@@ -325,6 +325,7 @@ class TableList extends PureComponent {
             </div>
             <div className={styles.commonTableWrapper}>
               <Table
+                scroll={{x:1300}}
                 bordered
                 size='small'
                 rowKey='uniqueKey'

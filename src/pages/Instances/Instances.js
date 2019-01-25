@@ -80,10 +80,12 @@ class TableList extends PureComponent {
     {
       title: 'Register Position',
       dataIndex: 'register_position',
+      width:300
     },
     {
       title: 'Registed At',
       dataIndex: 'registed_at',
+      width:200
     },
     {
       title: 'Status',
@@ -336,6 +338,7 @@ class TableList extends PureComponent {
             <div className={styles.commonTableWrapper}>
               <Table
                 bordered
+                scroll={{x:1500}}
                 size='small'
                 rowKey='uniqueKey'
                 loading={loading}
