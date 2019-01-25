@@ -59,6 +59,10 @@ class SuppliesForm extends Component {
     this.props.dispatch({
       type:'common/fetchCurrencyList'
     })
+    this.props.dispatch({//请求sales pm列表
+      type:'common/fetchRelationshipList',
+      payload:{page_type:'supply'}
+    })
     if(this.props.location.state){
       const editInfo = this.props.location.state.info;
       const company = editInfo.company || {};
@@ -128,20 +132,6 @@ class SuppliesForm extends Component {
         payload: {name:value},
       });
     }
-  }
-
-  selectCampany = (value,option) => {
-    const { companyDataList } = this.props.common;
-    companyDataList.map((item)=>{
-      if(item.value === value){
-        if(item.id){
-          this.props.dispatch({
-            type:'common/fetchRelationshipList',
-            payload:{page_type:'supply',company_id:item.id}
-          })
-        }
-      }
-    })
   }
 
   changeRegion = (type, value,option) => {
@@ -227,7 +217,6 @@ class SuppliesForm extends Component {
                 <AutoComplete
                   dataSource={companyDataList}
                   onSearch={this.searchCompany}
-                  onSelect={this.selectCampany}
                   placeholder="Search"
                 />
               )}

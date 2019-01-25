@@ -13,11 +13,11 @@ export default {
     bdsList:[],
     salesList:[],
     pmsList:[],
+    partnersList:[],
   },
 
   effects: {
     *fetchCountryList({payload}, { call, put }) {
-      console.log(payload)
       const response = yield call(queryCountryList);
       if(response && response.code == 0){
         const countryList = response.entries
@@ -60,7 +60,7 @@ export default {
       }
     },
     *fetchRelationshipList({payload}, { call, put }) {
-      const response = yield call(queryRelationship,payload);
+      const response = yield call(queryRelationship);
       if(response && response.code == 0){
         if(payload.page_type === 'supply'){
           yield put({
@@ -125,15 +125,16 @@ export default {
     asyncAMBDList(state,{payload}) {
       return {
         ...state,
-        amsList:payload.ams,
-        bdsList:payload.bds
+        amsList:payload.ams || [],
+        bdsList:payload.bds || []
       }
     },
     asyncSalePMList(state,{payload}) {
       return {
         ...state,
-        salesList:payload.sales,
-        pmsList:payload.pms
+        salesList:payload.sales || [],
+        pmsList:payload.pms || [],
+        partnersList:payload.partners||[]
       }
     },
     asyncCompanyDataList(state,{payload}) {

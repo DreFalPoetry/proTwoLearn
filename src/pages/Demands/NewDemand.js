@@ -39,11 +39,8 @@ class SuppliesForm extends Component {
     super(props);
     this.state = {
       isEdit:false,
-      formInfo:{
-        demand_type:'1',
-        client_type:'a',
-      },
-      demand_type:'1',
+      formInfo:{},
+      demand_type:1,
       breadcrumbList:[{
         title: formatMessage({ id: 'menu.demands' })
       },{
@@ -57,7 +54,14 @@ class SuppliesForm extends Component {
   
   componentDidMount(){
     this.props.dispatch({
+      type:'common/fetchCurrencyList'
+    })
+    this.props.dispatch({
       type:'common/fetchCountryList'
+    })
+    this.props.dispatch({//请求sales pm列表
+      type:'common/fetchRelationshipList',
+      payload:{page_type:'demand'}
     })
     if(this.props.location.query.info){
       this.setState({
@@ -83,6 +87,7 @@ class SuppliesForm extends Component {
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         console.log(values);
+        values.invoice_less_commission = Number(values.invoice_less_commission);
         if(isEdit){
           const response = editDemand(formInfo.id,values)
           response.then(json => {
@@ -123,11 +128,34 @@ class SuppliesForm extends Component {
     }
   }
 
+  changeRegion = (type, value,option) => {
+    if(type === 1){
+      this.props.form.setFieldsValue({
+        province_geoname_id:undefined,
+        city_geoname_id:undefined
+      })
+      this.props.dispatch({
+        type:'common/asyncStateList',
+        payload:option.props.childdata || []
+      })
+    }else if(type === 2){
+      this.props.form.setFieldsValue({
+        city_geoname_id:undefined
+      })
+      this.props.dispatch({
+        type:'common/asyncCityList',
+        payload:option.props.childdata || []
+      })
+    }
+  }
+
   render() {
     const {
-      form: { getFieldDecorator, getFieldValue },submitting,common:{companyDataList,countryList}
+      form: { getFieldDecorator, getFieldValue },submitting,
+      common:{companyDataList,countryList,stateList,cityList,salesList,pmsList,partnersList,currencyList}
     } = this.props;
     const {isEdit,formInfo,breadcrumbList,demand_type} = this.state;
+    const company = this.state.formInfo.company || {};
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -168,11 +196,11 @@ class SuppliesForm extends Component {
                     message: 'Please Input',
                   },
                 ],
-                initialValue:formInfo.demand_type
+                initialValue:formInfo.demand_type?formInfo.demand_type:1
               })(
                 <Radio.Group  buttonStyle="solid" onChange={this.changeDemandType}>
-                  <Radio.Button value="1">Client</Radio.Button>
-                  <Radio.Button value="2">Partner</Radio.Button>
+                  <Radio.Button value={1}>Client</Radio.Button>
+                  <Radio.Button value={2}>Partner</Radio.Button>
                 </Radio.Group>
               )}
             </FormItem>
@@ -186,12 +214,12 @@ class SuppliesForm extends Component {
                         message: 'Please Input',
                       },
                     ],
-                    initialValue:formInfo.client_type
+                    initialValue:formInfo.client_type?formInfo.client_type:1
                   })(
                     <Radio.Group  buttonStyle="solid">
-                      <Radio.Button value="a">Direct</Radio.Button>
-                      <Radio.Button value="b">Agency</Radio.Button>
-                      <Radio.Button value="c">Affiliate Network</Radio.Button>
+                      <Radio.Button value={1}>Direct</Radio.Button>
+                      <Radio.Button value={2}>Agency</Radio.Button>
+                      <Radio.Button value={3}>Affiliate Network</Radio.Button>
                     </Radio.Group>
                   )}
                 </FormItem>
@@ -216,7 +244,7 @@ class SuppliesForm extends Component {
                     message: 'Please Input',
                   },
                 ],
-                initialValue:formInfo.company
+                initialValue:company.name
               })(
                 <AutoComplete
                   dataSource={companyDataList}
@@ -226,73 +254,75 @@ class SuppliesForm extends Component {
               )}
             </FormItem>
             <FormItem {...formItemLayout} label="Country">
-              {getFieldDecorator('country', {
+              {getFieldDecorator('country_code', {
                 rules: [
                   {
                     required: true,
                     message: 'Please Input',
                   },
                 ],
-                initialValue:formInfo.country
+                initialValue:company.country_code
               })(
                 <Select
                   showSearch
-                  placeholder="Select a Country"
+                  placeholder="Select"
                   optionFilterProp="children"
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  onChange={this.changeRegion.bind(this,1)}
                 >
-                  {countryList.map((item,index)=> <Option key={index} value={item.value}>{item.label}</Option> )}
+                  {countryList.map((item,index)=> <Option key={index} childdata={item.children} value={item.value}>{item.label}</Option> )}
                 </Select>
               )}
             </FormItem>
             <FormItem {...formItemLayout} label="State">
-              {getFieldDecorator('state', {
+              {getFieldDecorator('province_geoname_id', {
                 rules: [
                   {
                     required: true,
                     message: 'Please Input',
                   },
                 ],
-                initialValue:formInfo.state
+                initialValue:company.province_geoname_id?String(company.province_geoname_id):undefined
               })(
                 <Select
                   showSearch
-                  placeholder="Select a Country"
+                  placeholder="Select"
                   optionFilterProp="children"
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  onChange={this.changeRegion.bind(this,2)}
                 >
-                  {countryList.map((item,index)=> <Option key={index} value={item.value}>{item.label}</Option> )}
+                  {stateList.map((item,index)=> <Option key={index} childdata={item.children} value={item.value}>{item.label}</Option> )}
                 </Select>
               )}
             </FormItem>
             <FormItem {...formItemLayout} label="City">
-              {getFieldDecorator('city', {
+              {getFieldDecorator('city_geoname_id', {
                 rules: [
                   {
                     required: true,
                     message: 'Please Input',
                   },
                 ],
-                initialValue:formInfo.city
+                initialValue:company.city_geoname_id?String(company.city_geoname_id):undefined
               })(
                 <Select
                   showSearch
-                  placeholder="Select a Country"
+                  placeholder="Select"
                   optionFilterProp="children"
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
-                  {countryList.map((item,index)=> <Option key={index} value={item.value}>{item.label}</Option> )}
+                  {cityList.map((item,index)=> <Option key={index} value={item.value}>{item.label}</Option> )}
                 </Select>
               )}
             </FormItem>
             <FormItem {...formItemLayout} label="Address">
               {getFieldDecorator('address',{
-                initialValue:formInfo.address
+                initialValue:company.address
               })(<Input autoComplete="off"/>)}
             </FormItem>
             <FormItem {...formItemLayout} label="Website">
               {getFieldDecorator('website', {
-                initialValue:formInfo.website
+                initialValue:company.website
               })(<Input autoComplete="off"/>)}
             </FormItem>
             <FormItem {...formItemLayout} label="Remark">
@@ -312,9 +342,10 @@ class SuppliesForm extends Component {
                   },
                 ],
               })(
-                <Select allowClear>
-                  <Option value="USD">$</Option>
-                  <Option value="ruby">ruby</Option>
+                <Select allowClear  placeholder="Select">
+                  {
+                    currencyList.map((item,index)=><Option key={index} value={item}>{item}</Option>)
+                  }
                 </Select>
               )}
             </FormItem>
@@ -328,9 +359,10 @@ class SuppliesForm extends Component {
                   },
                 ],
               })(
-                <Select allowClear>
-                  <Option value="30">30 Days</Option>
-                  <Option value="40">40 Days</Option>
+                <Select allowClear  placeholder="Select">
+                  <Option value={30}>30 Days</Option>
+                  <Option value={60}>60 Days</Option>
+                  <Option value={90}>90 Days</Option>
                 </Select>
               )}
             </FormItem>
@@ -343,7 +375,8 @@ class SuppliesForm extends Component {
             </FormItem>
             <FormItem {...formItemLayout} label="Invoice Less Commission">
               {getFieldDecorator('invoice_less_commission', {
-                initialValue:formInfo.invoice_less_commission
+                 valuePropName:'checked',
+                initialValue:formInfo.invoice_less_commission?true:false
               })(
                 <Checkbox>Invoice LC</Checkbox>
               )}
@@ -361,31 +394,34 @@ class SuppliesForm extends Component {
                   <Row><Col xs={24} sm={7}><h2 className={styles.infoFormStepHeader}>Relationship</h2></Col></Row>
                   <FormItem {...formItemLayout} label="Partner">
                     {getFieldDecorator('partner', {
-                      initialValue:formInfo.partner
+                      initialValue:formInfo.partner?formInfo.partner:undefined
                     })(
-                      <Select allowClear>
-                        <Option value="1">Tom</Option>
-                        <Option value="2">Jeny</Option>
+                      <Select allowClear  placeholder="Select">
+                        {partnersList.map((item,index)=>(
+                          <Option value={item.id} key={index}>{item.name}</Option>
+                        ))}
                       </Select>
                     )}
                   </FormItem>
                   <FormItem {...formItemLayout} label="Sales">
                     {getFieldDecorator('sales', {
-                      initialValue:formInfo.sales
+                      initialValue:formInfo.sales?formInfo.sales:undefined
                     })(
-                      <Select allowClear>
-                        <Option value="1">Tom</Option>
-                        <Option value="2">Jeny</Option>
+                      <Select allowClear  placeholder="Select">
+                        {salesList.map((item,index)=>(
+                          <Option value={item.id} key={index}>{item.name}</Option>
+                        ))}
                       </Select>
                     )}
                   </FormItem>
                   <FormItem {...formItemLayout} label="PM">
                     {getFieldDecorator('pm', {
-                      initialValue:formInfo.pm
+                      initialValue:formInfo.pm?formInfo.pm:undefined
                     })(
-                      <Select allowClear>
-                        <Option value="1">Tom</Option>
-                        <Option value="2">Jeny</Option>
+                      <Select allowClear  placeholder="Select">
+                        {pmsList.map((item,index)=>(
+                          <Option value={item.id} key={index}>{item.name}</Option>
+                        ))}
                       </Select>
                     )}
                   </FormItem>

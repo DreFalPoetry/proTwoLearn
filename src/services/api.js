@@ -192,7 +192,7 @@ export async function changeSupplyStatus(params) {
 }
 
 export async function queryDemands(params) {
-  return request(`/api/demands?${stringify(params)}`);
+  return request('http://192.168.31.15:8081' + `/demand?${stringify(params)}`);
 }
 
 export async function changeDemandStatus(params) {
@@ -220,8 +220,8 @@ export async function queryCountryList() {
   return request('http://192.168.31.15:8081' + `/common/regions`);
 }
 
-export async function queryRelationship(params) {
-  return request('http://192.168.31.15:8081' + `/common/relationship?${stringify(params)}`);
+export async function queryRelationship() {
+  return request('http://192.168.31.15:8081' + `/common/relationship`);
 }
 
 export async function queryCurrency() {

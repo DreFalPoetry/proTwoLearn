@@ -89,9 +89,9 @@ export default {
       yield put(
         routerRedux.push({
           pathname: '/user/login',
-          search: stringify({
-            redirect: window.location.href,
-          }),
+          // search: stringify({
+          //   redirect: window.location.href,
+          // }),
         })
       ) 
     }

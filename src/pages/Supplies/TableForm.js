@@ -27,7 +27,7 @@ class TableForm extends PureComponent {
     if(this.props.company_id){
       const response = queryCampanyNumbers({company_id:this.props.company_id});
       response.then((json)=>{
-        if(json.code == 0){
+        if(json && json.code == 0){
           let tempData = json.entries;
           tempData.map((item,index)=>{
             item.uniqueKey = index
