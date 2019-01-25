@@ -1,10 +1,14 @@
 import React, { PureComponent, Fragment } from 'react';
-import { Table, Button, Input, message, Popconfirm, Divider } from 'antd';
+import { Table, Button, Input, message, Popconfirm, Divider,Checkbox,Select } from 'antd';
 import isEqual from 'lodash/isEqual';
 import styles from '../../css/common.less';
+import {queryCampanyNumbers,addCampanyNumbers} from '../../services/api';
+import { submitCallback } from '../../utils/commonFunc';
+
+const Option = Select.Option;
 
 class TableForm extends PureComponent {
-  index = 0;
+  departmentOpts=[{label:'OP',value:1},{label:'BD',value:2},{label:'Finance',value:3}]
 
   cacheOriginData = {};
 
@@ -19,6 +23,23 @@ class TableForm extends PureComponent {
     };
   }
 
+  componentDidMount(){
+    if(this.props.company_id){
+      const response = queryCampanyNumbers({company_id:this.props.company_id});
+      response.then((json)=>{
+        if(json.code == 0){
+          let tempData = json.entries;
+          tempData.map((item,index)=>{
+            item.uniqueKey = index
+          })
+          this.setState({
+            data:tempData
+          })
+        }
+      })
+    }
+  }
+
   static getDerivedStateFromProps(nextProps, preState) {
     if (isEqual(nextProps.value, preState.value)) {
       return null;
@@ -31,7 +52,7 @@ class TableForm extends PureComponent {
 
   getRowByKey(key, newData) {
     const { data } = this.state;
-    return (newData || data).filter(item => item.key === key)[0];
+    return (newData || data).filter(item => item.uniqueKey === key)[0];
   }
 
   toggleEditable = (e, key) => {
@@ -40,12 +61,25 @@ class TableForm extends PureComponent {
     const newData = data.map(item => ({ ...item }));
     const target = this.getRowByKey(key, newData);
     if (target) {
-      // 进入编辑状态时保存原始数据
       if (!target.editable) {
         this.cacheOriginData[key] = { ...target };
+        target.editable = !target.editable;
+        this.setState({ data: newData });
+      }else{
+        if(target.isNew){
+          delete target.isNew
+          const params = {...target,company_id:this.props.company_id};
+          const response = addCampanyNumbers(params)
+          response.then((json)=>{
+            if(submitCallback(json)){
+              target.editable = !target.editable;
+              this.setState({ data: newData ,loading:false});
+            } 
+          })
+        }else{
+          console.log('editToSave')
+        }
       }
-      target.editable = !target.editable;
-      this.setState({ data: newData });
     }
   };
 
@@ -53,36 +87,46 @@ class TableForm extends PureComponent {
     const { data } = this.state;
     const newData = data.map(item => ({ ...item }));
     newData.push({
-      key: `NEW_TEMP_ID_${this.index}`,
+      uniqueKey: data.length,
       name: '',
       email: '',
-      partment: '',
-      as_login_account: '',
+      department: '',
+      as_user: 0,
       editable: true,
       isNew: true,
     });
-    this.index += 1;
+    console.log(newData);
     this.setState({ data: newData });
   };
 
   remove(key) {
     const { data } = this.state;
-    const newData = data.filter(item => item.key !== key);
-    this.setState({ data: newData });
-  }
-
-  handleKeyPress(e, key) {
-    if (e.key === 'Enter') {
-      this.saveRow(e, key);
+    const newData = data.map(item => ({ ...item }));
+    const target = this.getRowByKey(key, newData);
+    let reNewData = data.filter(item => item.uniqueKey !== key);
+    if(target.isNew){
+      this.setState({ data: reNewData });
+    }else{
+      reNewData.map((item,index)=>{
+        item.uniqueKey = index
+      });
+      this.setState({ data: reNewData });
+      console.log(reNewData);
     }
   }
 
-  handleFieldChange(e, fieldName, key) {
+  handleFieldChange(type, fieldName, key,event) {
     const { data } = this.state;
     const newData = data.map(item => ({ ...item }));
     const target = this.getRowByKey(key, newData);
     if (target) {
-      target[fieldName] = e.target.value;
+      if(type == 1){
+        target[fieldName] = event.target.value ;
+      }else if(type == 2){
+        target[fieldName] = event;
+      }else if(type == 3){
+        target[fieldName] = Number(event.target.checked);
+      }
       this.setState({ data: newData });
     }
   }
@@ -92,26 +136,22 @@ class TableForm extends PureComponent {
     this.setState({
       loading: true,
     });
-    setTimeout(() => {
-      if (this.clickedCancel) {
-        this.clickedCancel = false;
-        return;
-      }
-      const target = this.getRowByKey(key) || {};
-      if (!target.name || !target.email || !target.partment || !target.as_login_account) {
-        message.error('please fully complete');
-        e.target.focus();
-        this.setState({
-          loading: false,
-        });
-        return;
-      }
-      delete target.isNew;
-      this.toggleEditable(e, key);
+   
+    if (this.clickedCancel) {
+      this.clickedCancel = false;
+      return;
+    }
+    const target = this.getRowByKey(key) || {};
+    if (!target.name || !target.email || !target.department) {
+      message.error('please fully complete');
+      e.target.focus();
       this.setState({
         loading: false,
       });
-    }, 500);
+      return;
+    }
+    // delete target.isNew;
+    this.toggleEditable(e, key);
   }
 
   cancel(e, key) {
@@ -129,6 +169,16 @@ class TableForm extends PureComponent {
     this.clickedCancel = false;
   }
 
+  getPartmentText = (val) => {
+    let optLabel = '';
+    this.departmentOpts.map((item)=>{
+      if(item.value === val){
+        optLabel = item.label
+      }
+    })
+    return optLabel;
+  }
+
   render() {
     const columns = [
       {
@@ -140,8 +190,7 @@ class TableForm extends PureComponent {
               <Input
                 value={text}
                 autoFocus
-                onChange={e => this.handleFieldChange(e, 'name', record.key)}
-                onKeyPress={e => this.handleKeyPress(e, record.key)}
+                onChange={this.handleFieldChange.bind(this, 1, 'name', record.uniqueKey)}
               />
             );
           }
@@ -156,8 +205,7 @@ class TableForm extends PureComponent {
             return (
               <Input
                 value={text}
-                onChange={e => this.handleFieldChange(e, 'email', record.key)}
-                onKeyPress={e => this.handleKeyPress(e, record.key)}
+                onChange={this.handleFieldChange.bind(this, 1, 'email', record.uniqueKey)}
               />
             );
           }
@@ -166,34 +214,32 @@ class TableForm extends PureComponent {
       },
       {
         title: 'Partment',
-        dataIndex: 'partment',
+        dataIndex: 'department',
         render: (text, record) => {
           if (record.editable) {
             return (
-              <Input
-                value={text}
-                onChange={e => this.handleFieldChange(e, 'partment', record.key)}
-                onKeyPress={e => this.handleKeyPress(e, record.key)}
-              />
+              <Select value={text} style={{ width: 120 }}  onChange={this.handleFieldChange.bind(this, 2, 'department', record.uniqueKey)}>
+                {
+                  this.departmentOpts.map((item,index)=>(
+                    <Option value={item.value} key={index}>{item.label}</Option>
+                  ))
+                }
+              </Select>
             );
           }
-          return text;
+          return this.getPartmentText(text);
         },
       },
       {
         title: 'as Loggin Account',
-        dataIndex: 'as_login_account',
+        dataIndex: 'as_user',
         render: (text, record) => {
           if (record.editable) {
             return (
-              <Input
-                value={text}
-                onChange={e => this.handleFieldChange(e, 'as_login_account', record.key)}
-                onKeyPress={e => this.handleKeyPress(e, record.key)}
-              />
+              <Checkbox checked={text}  onChange={this.handleFieldChange.bind(this, 3, 'as_user', record.uniqueKey)}/>
             );
           }
-          return text;
+          return text?'True':'False';
         },
       },
       {
@@ -208,9 +254,9 @@ class TableForm extends PureComponent {
             if (record.isNew) {
               return (
                 <span>
-                  <a onClick={e => this.saveRow(e, record.key)}>Add</a>
+                  <a onClick={e => this.saveRow(e, record.uniqueKey)}>Add</a>
                   <Divider type="vertical" />
-                  <Popconfirm title="Sure to delete the Row？" onConfirm={() => this.remove(record.key)}>
+                  <Popconfirm title="Sure to delete the Row？" onConfirm={() => this.remove(record.uniqueKey)}>
                     <a>Delete</a>
                   </Popconfirm>
                 </span>
@@ -218,17 +264,17 @@ class TableForm extends PureComponent {
             }
             return (
               <span>
-                <a onClick={e => this.saveRow(e, record.key)}>Save</a>
+                <a onClick={e => this.saveRow(e, record.uniqueKey)}>Save</a>
                 <Divider type="vertical" />
-                <a onClick={e => this.cancel(e, record.key)}>Cancel</a>
+                <a onClick={e => this.cancel(e, record.uniqueKey)}>Cancel</a>
               </span>
             );
           }
           return (
             <span>
-              <a onClick={e => this.toggleEditable(e, record.key)}>Edit</a>
+              <a onClick={e => this.toggleEditable(e, record.uniqueKey)}>Edit</a>
               <Divider type="vertical" />
-              <Popconfirm title="Sure to delete the row？" onConfirm={() => this.remove(record.key)}>
+              <Popconfirm title="Sure to delete the row？" onConfirm={() => this.remove(record.uniqueKey)}>
                 <a>Delete</a>
               </Popconfirm>
             </span>
@@ -242,6 +288,7 @@ class TableForm extends PureComponent {
     return (
       <Fragment>
         <Table
+          rowKey="uniqueKey"
           loading={loading}
           columns={columns}
           dataSource={data}
