@@ -16,13 +16,38 @@ export default {
   },
 
   effects: {
-    *fetchCountryList(_, { call, put }) {
+    *fetchCountryList({payload}, { call, put }) {
+      console.log(payload)
       const response = yield call(queryCountryList);
       if(response && response.code == 0){
+        const countryList = response.entries
         yield put({
           type: 'asyncCountryList',
-          payload: response.entries,
+          payload: countryList,
         });
+        if(payload){
+          const {country_code,province_geoname_id} = payload;
+          let provinceList = [] ;
+          let cityList = [];
+          countryList.map((item)=>{
+            if(item.value == country_code){
+              provinceList = item.children || [];
+              provinceList.map((item2)=>{
+                if(item2.value == province_geoname_id){
+                  cityList = item2.children || [];
+                }
+              })
+            }
+          })
+          yield put({
+            type: 'asyncStateList',
+            payload: provinceList,
+          });
+          yield put({
+            type: 'asyncCityList',
+            payload: cityList,
+          });
+        }
       }
     },
     *fetchCurrencyList(_, { call, put }) {

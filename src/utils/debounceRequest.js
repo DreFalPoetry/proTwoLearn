@@ -98,9 +98,9 @@ export default function debounceRequest(url, options) {
 		.then(checkStatus)
 		.then(response => {
 			delete fetchStore[storeIndex];
-			if (newOptions.method === 'DELETE' || response.status === 204) {
-				return response.text();
-			}
+			// if (newOptions.method === 'DELETE' || response.status === 204) {
+			// 	return response.text();
+			// }
 			return response.json();
 		})
 		.catch(e => {

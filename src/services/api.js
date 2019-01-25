@@ -178,7 +178,7 @@ export async function newSupply(params) {
 }
 
 export async function editSupply(id,params) {
-  return request('/supply/' + id,{
+  return request('http://192.168.31.15:8081' + '/supply/' + id,{
     method: 'PUT',
     body: params,
   });
@@ -236,6 +236,19 @@ export async function addCampanyNumbers(params) {
 	return request('http://192.168.31.15:8081' + `/member`,{
     method: 'POST',
     body: params,
+  });
+}
+
+export async function editCampanyNumbers(id,params) {
+	return request('http://192.168.31.15:8081' + `/member/`+ id,{
+    method: 'PUT',
+    body: params,
+  });
+}
+
+export async function deleteCampanyNumbers(id) {
+  return request('http://192.168.31.15:8081' + `/member/`+ id, {
+    method: 'DELETE',
   });
 }
 

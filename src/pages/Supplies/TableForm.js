@@ -2,7 +2,7 @@ import React, { PureComponent, Fragment } from 'react';
 import { Table, Button, Input, message, Popconfirm, Divider,Checkbox,Select } from 'antd';
 import isEqual from 'lodash/isEqual';
 import styles from '../../css/common.less';
-import {queryCampanyNumbers,addCampanyNumbers} from '../../services/api';
+import {queryCampanyNumbers,addCampanyNumbers,editCampanyNumbers,deleteCampanyNumbers} from '../../services/api';
 import { submitCallback } from '../../utils/commonFunc';
 
 const Option = Select.Option;
@@ -78,6 +78,14 @@ class TableForm extends PureComponent {
           })
         }else{
           console.log('editToSave')
+          const params = {...target,company_id:this.props.company_id,};
+          const response = editCampanyNumbers(target.id,params)
+          response.then((json)=>{
+            if(submitCallback(json)){
+              target.editable = !target.editable;
+              this.setState({ data: newData ,loading:false});
+            } 
+          })
         }
       }
     }
@@ -107,11 +115,21 @@ class TableForm extends PureComponent {
     if(target.isNew){
       this.setState({ data: reNewData });
     }else{
-      reNewData.map((item,index)=>{
-        item.uniqueKey = index
-      });
-      this.setState({ data: reNewData });
-      console.log(reNewData);
+      this.setState({
+        loading:true
+      })
+      const response = deleteCampanyNumbers(target.id);
+      response.then((json)=>{
+        if(json && json.code === 0){
+          reNewData.map((item,index)=>{
+            item.uniqueKey = index
+          });
+          this.setState({ data: reNewData});
+        }
+        this.setState({
+          loading:false
+        })
+      }) 
     }
   }
 
@@ -201,7 +219,7 @@ class TableForm extends PureComponent {
         title: 'Email',
         dataIndex: 'email',
         render: (text, record) => {
-          if (record.editable) {
+          if (record.editable && record.isNew) {
             return (
               <Input
                 value={text}

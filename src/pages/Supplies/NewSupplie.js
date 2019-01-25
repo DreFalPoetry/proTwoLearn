@@ -41,7 +41,9 @@ class SuppliesForm extends Component {
     super(props);
     this.state = {
       isEdit:false,
-      formInfo:{},
+      formInfo:{
+        company:{}
+      },
       breadcrumbList:[{
         title: formatMessage({ id: 'menu.supplies' })
       },{
@@ -55,13 +57,15 @@ class SuppliesForm extends Component {
   
   componentDidMount(){
     this.props.dispatch({
-      type:'common/fetchCountryList'
-    })
-    this.props.dispatch({
       type:'common/fetchCurrencyList'
     })
     if(this.props.location.state){
       const editInfo = this.props.location.state.info;
+      const company = editInfo.company || {};
+      this.props.dispatch({
+        type:'common/fetchCountryList',
+        payload:{country_code:company.country_code,province_geoname_id:company.province_geoname_id}
+      })
       this.props.dispatch({
         type:'common/fetchRelationshipList',
         payload:{page_type:'supply',company_id:editInfo.company_id}
@@ -167,6 +171,7 @@ class SuppliesForm extends Component {
       common:{companyDataList,countryList,stateList,cityList,currencyList,amsList,bdsList}
     } = this.props;
     const {isEdit,formInfo,breadcrumbList} = this.state;
+    const company = this.state.formInfo.company || {};
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -217,7 +222,7 @@ class SuppliesForm extends Component {
                     message: 'Please Input',
                   },
                 ],
-                initialValue:formInfo.company_name
+                initialValue:company.name
               })(
                 <AutoComplete
                   dataSource={companyDataList}
@@ -235,7 +240,7 @@ class SuppliesForm extends Component {
                     message: 'Please Input',
                   },
                 ],
-                initialValue:formInfo.country_code
+                initialValue:company.country_code
               })(
                 <Select
                   showSearch
@@ -256,10 +261,9 @@ class SuppliesForm extends Component {
                     message: 'Please Input',
                   },
                 ],
-                initialValue:formInfo.province_geoname_id
+                initialValue:company.province_geoname_id?String(company.province_geoname_id):undefined
               })(
                 <Select
-                  key={stateList}
                   showSearch
                   placeholder="Select"
                   optionFilterProp="children"
@@ -279,7 +283,7 @@ class SuppliesForm extends Component {
                     message: 'Please Input',
                   },
                 ],
-                initialValue:formInfo.city_geoname_id
+                initialValue: company.city_geoname_id?String(company.city_geoname_id):undefined
               })(
                 <Select
                   showSearch
@@ -294,12 +298,12 @@ class SuppliesForm extends Component {
             </FormItem>
             <FormItem {...formItemLayout} label="Address">
               {getFieldDecorator('address',{
-                initialValue:formInfo.address
+                initialValue:company.address
               })(<Input autoComplete='off' />)}
             </FormItem>
             <FormItem {...formItemLayout} label="Website">
               {getFieldDecorator('website', {
-                initialValue:formInfo.website
+                initialValue:company.website
               })(<Input autoComplete='off'/>)}
             </FormItem>
             <FormItem {...formItemLayout} label="Remark">
@@ -469,7 +473,7 @@ class SuppliesForm extends Component {
             <Row><Col xs={24} sm={7}><h2 className={styles.infoFormStepHeader}>Relationship</h2></Col></Row>
             <FormItem {...formItemLayout} label="BD">
               {getFieldDecorator('bd', {
-                initialValue:formInfo.bd
+                initialValue:formInfo.bd?formInfo.bd:undefined
               })(
                 <Select allowClear>
                  {bdsList.map((item,index)=>(
@@ -480,7 +484,7 @@ class SuppliesForm extends Component {
             </FormItem>
             <FormItem {...formItemLayout} label="AM">
               {getFieldDecorator('am', {
-                initialValue:formInfo.am
+                initialValue:formInfo.am?formInfo.am:undefined
               })(
                 <Select allowClear>
                 {amsList.map((item,index)=>(
