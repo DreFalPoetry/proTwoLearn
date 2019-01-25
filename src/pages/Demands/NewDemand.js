@@ -21,7 +21,7 @@ import {
 } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from '../../css/common.less';
-import TableForm from './TableForm';
+import TableForm from '../Supplies/TableForm';
 import {newDemand,editDemand} from '../../services/api';
 
 const FormItem = Form.Item;
@@ -56,18 +56,21 @@ class SuppliesForm extends Component {
     this.props.dispatch({
       type:'common/fetchCurrencyList'
     })
-    this.props.dispatch({
-      type:'common/fetchCountryList'
-    })
     this.props.dispatch({//请求sales pm列表
       type:'common/fetchRelationshipList',
       payload:{page_type:'demand'}
     })
-    if(this.props.location.query.info){
+    if(this.props.location.state){
+      const editInfo = this.props.location.state.info;
+      const company = editInfo.company || {};
+      this.props.dispatch({
+        type:'common/fetchCountryList',
+        payload:{country_code:company.country_code,province_geoname_id:company.province_geoname_id}
+      })
       this.setState({
         isEdit:true,
-        formInfo:this.props.location.query.info,
-        demand_type:this.props.location.query.info.demand_type,
+        formInfo:editInfo,
+        demand_type:editInfo.demand_type,
         breadcrumbList:[{
           title: formatMessage({ id: 'menu.demands' })
         },{
@@ -178,7 +181,7 @@ class SuppliesForm extends Component {
     let headerSettings = {
       breadcrumbList,
       key:isEdit,
-      title:isEdit?'Edit Supply':'New Supply',
+      title:isEdit?'Edit Demand':'New Demand',
     }
 
     return (
@@ -438,9 +441,13 @@ class SuppliesForm extends Component {
             </FormItem>
           </Form>
         </Card>
-        <Card title="Manage Members" bordered={false}>
-          <TableForm />
-        </Card>
+        {
+          isEdit?(
+            <Card title="Manage Members" bordered={false} style={{marginTop:24}} >
+              <TableForm company_id={formInfo.company_id}/>
+            </Card>
+          ):null
+        }
       </PageHeaderWrapper>
     );
   }

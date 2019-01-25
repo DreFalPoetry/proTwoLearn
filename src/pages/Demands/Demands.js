@@ -258,7 +258,7 @@ class TableList extends PureComponent {
   editRowInfo = (record) => {
     this.props.history.push({
       pathname:'/demands/editDemand',
-      query:{info:record},
+      state:{info:record},
     })
   }
 

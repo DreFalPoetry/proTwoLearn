@@ -203,14 +203,14 @@ export async function changeDemandStatus(params) {
 }
 
 export async function newDemand(params) {
-  return request('/demand',{
+  return request('http://192.168.31.15:8081'+'/demand',{
     method: 'POST',
     body: params,
   });
 }
 
 export async function editDemand(id,params) {
-  return request('/demand/' + id,{
+  return request('http://192.168.31.15:8081'+'/demand/' + id,{
     method: 'PUT',
     body: params,
   });

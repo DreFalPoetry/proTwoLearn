@@ -70,10 +70,6 @@ class SuppliesForm extends Component {
         type:'common/fetchCountryList',
         payload:{country_code:company.country_code,province_geoname_id:company.province_geoname_id}
       })
-      this.props.dispatch({
-        type:'common/fetchRelationshipList',
-        payload:{page_type:'supply',company_id:editInfo.company_id}
-      })
       this.setState({
         isEdit:true,
         formInfo:editInfo,
