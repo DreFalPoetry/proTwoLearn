@@ -53,9 +53,9 @@ export function getInstanceStatusLabel(status){
 
 export function getSupplyStatusLabel(status){
   switch (status) {
-    case 1:
+    case 0:
       return  <Tag color="#009900">Normal</Tag>;
-    case 2:
+    case 1:
       return  <Tag color="#cc0000">Banned</Tag>
     default:
       return '';
@@ -76,9 +76,9 @@ export function getDemandTypeLabel(status){
 
 export function getDemandStatusLabel(status){
   switch (status) {
-    case 1:
+    case 0:
       return  <Tag color="#009900">Normal</Tag>;
-    case 2:
+    case 1:
       return  <Tag color="#cc0000">Banned</Tag>
     default:
       return '';

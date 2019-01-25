@@ -73,6 +73,7 @@ class TableForm extends PureComponent {
           response.then((json)=>{
             if(submitCallback(json)){
               target.editable = !target.editable;
+              target.id = json.entry.id;
               this.setState({ data: newData ,loading:false});
             } 
           })

@@ -49,7 +49,7 @@ const status = ['关闭', '运行中', '已上线', '异常'];
 }))
 class TableList extends PureComponent {
   state = {
-    recently_statistics:undefined
+    statistic_by:undefined
   };
 
   columns = [
@@ -64,6 +64,10 @@ class TableList extends PureComponent {
     {
       title: 'Company',
       dataIndex: 'company_name',
+      render:(text,record)=>{
+        const company = record.company || {};
+        return company.name
+      }
     },
     {
       title: 'BD',
@@ -75,7 +79,7 @@ class TableList extends PureComponent {
     },
     {
       title: 'Status',
-      dataIndex: 'status',
+      dataIndex: 'banned',
       render:(text)=>{
         return getSupplyStatusLabel(text)
       }
@@ -257,7 +261,7 @@ class TableList extends PureComponent {
 
   changeStatistics = (value) => {
     this.setState({
-      recently_statistics:value
+      statistic_by:value
     },()=>{
       this.fetchDataList()
     })
@@ -285,7 +289,7 @@ class TableList extends PureComponent {
     const { dispatch, supplies:{ formValues,pageSettings } } = this.props;
     const formParams = formVal || formValues;
     const pageParams = pageSet || pageSettings;
-    const singleParams = {recently_statistics:this.state.recently_statistics}
+    const singleParams = {statistic_by:this.state.statistic_by}
     dispatch({
       type: 'supplies/fetch',
       payload: {...formParams,...pageParams,...singleParams}
