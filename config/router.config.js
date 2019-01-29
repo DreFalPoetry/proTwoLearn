@@ -92,6 +92,30 @@ export default [
         ]
       },
       {
+        path:'/campaigns',
+        name:'campaigns',
+        icon:'dashboard',
+        routes:[
+          {
+            path:'/campaigns/manageCampaigns',
+            name:'campaigns',
+            component:'./Campaigns/Campaigns'
+          },
+          {
+            path: '/campaigns/newCampaign',
+            name: 'newCampaign',
+            hideInMenu: true,
+            component: './Campaigns/NewCampaign/index',
+          },
+          {
+            path: '/campaigns/editCampaign',
+            name: 'editCampaign',
+            hideInMenu: true,
+            component: './Campaigns/NewCampaign/index',
+          },
+        ]
+      },
+      {
         path: '/dashboard',
         name: 'dashboard',
         icon: 'dashboard',
